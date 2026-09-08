@@ -25,8 +25,12 @@ export function About({ standalone = false }: AboutProps) {
   });
 
   const lineWidth = useTransform(scrollYProgress, [0.2, 0.6], ["0%", "100%"]);
-  const bgX = useTransform(scrollYProgress, [0, 1], ["50%", "-20%"]);
-  const bgOpacity = useTransform(scrollYProgress, [0, 0.25, 0.65], [0.01, 0.025, 0.04]);
+  const bgX = useTransform(scrollYProgress, [0, 0.55, 1], ["18vw", "-8vw", "-28vw"]);
+  const bgOpacity = useTransform(
+    scrollYProgress,
+    [0, 0.2, 0.55, 0.85],
+    [0.035, 0.08, 0.16, 0.22],
+  );
 
   return (
     <section

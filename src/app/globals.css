@@ -33,6 +33,14 @@ body {
   overflow-x: hidden;
 }
 
+html:has(#home-showcase) {
+  overflow: hidden;
+}
+
+html:has(#home-showcase) footer {
+  display: none;
+}
+
 ::selection {
   background: rgba(61, 107, 79, 0.35);
   color: var(--foreground);
@@ -79,14 +87,6 @@ body {
 
 .group:hover .accent-line::after {
   width: 100%;
-}
-
-@media (max-width: 767px) {
-  .service-grid-item {
-    grid-column: auto !important;
-    grid-row: auto !important;
-    min-height: 180px;
-  }
 }
 
 .video-overlay {

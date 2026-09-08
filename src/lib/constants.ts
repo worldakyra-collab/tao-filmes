@@ -13,34 +13,28 @@ export const COLORS = {
   blue: "#2A4A6B",
 } as const;
 
-export const NAV_ITEMS = [
-  { label: "Portfólio", href: "/portfolio" },
-  { label: "Serviços", href: "/servicos" },
+export const SITE_MENU_ITEMS = [
+  { label: "Início", href: "/inicio" },
   { label: "Sobre", href: "/sobre" },
-  { label: "Equipe", href: "/equipe" },
   { label: "Contato", href: "/contato" },
+  { label: "Teste 2", href: "/teste-2" },
 ] as const;
 
+/** @deprecated use SITE_MENU_ITEMS — mantido como alias para compatibilidade */
+export const NAV_ITEMS = SITE_MENU_ITEMS;
+
 export const PAGE_META = {
-  portfolio: {
-    title: "Portfólio",
-    subtitle: "Projetos em destaque",
-    number: "01",
-  },
   servicos: {
     title: "Serviços",
     subtitle: "O que produzimos",
     number: "02",
+    heroImage:
+      "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=2000&q=80",
   },
   sobre: {
     title: "Sobre",
     subtitle: "Nossa essência",
     number: "03",
-  },
-  equipe: {
-    title: "Equipe",
-    subtitle: "Quem faz acontecer",
-    number: "04",
   },
   contato: {
     title: "Contato",

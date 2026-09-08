@@ -1,6 +1,20 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import { BRAND } from "@/lib/constants";
 
 export function Footer() {
+  const pathname = usePathname();
+
+  if (
+    pathname === "/" ||
+    pathname === "/teste-2" ||
+    pathname === "/sobre" ||
+    pathname === "/contato"
+  ) {
+    return null;
+  }
+
   return (
     <footer className="border-t border-white/5 px-6 md:px-12 py-12 md:py-16">
       <div className="mx-auto max-w-[1800px] flex flex-col md:flex-row items-start md:items-end justify-between gap-8">

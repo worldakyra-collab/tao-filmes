@@ -14,27 +14,20 @@ export type Project = {
 export type Service = {
   id: string;
   title: string;
+  description: string;
   image: string;
-};
-
-export type ServiceGridItem = {
-  id: string;
-  image: string;
-  title?: string;
-  slug: string;
-  gridColumn: string;
-  gridRow: string;
 };
 
 export function getProjectBySlug(slug: string): Project | undefined {
   return PROJECTS.find((project) => project.slug === slug);
 }
 
-export const HERO_VIDEO =
-  "https://assets.mixkit.co/videos/preview/mixkit-film-reel-close-up-in-the-dark-4077-large.mp4";
+export const SITE_VIDEO_1 = "/video/esse1.mp4";
+export const SITE_VIDEO_2 = "/video/esse2.mp4";
 
-export const ABOUT_VIDEO =
-  "https://assets.mixkit.co/videos/preview/mixkit-people-watching-a-movie-in-a-cinema-4356-large.mp4";
+export const HERO_VIDEO = SITE_VIDEO_1;
+
+export const ABOUT_VIDEO = SITE_VIDEO_2;
 
 export const ABOUT_STATS = [
   { value: 120, label: "Projetos" },
@@ -52,9 +45,8 @@ export const PROJECTS: Project[] = [
     year: "2025",
     client: "Marca Nacional",
     image:
-      "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1600&q=80",
-    video:
-      "https://assets.mixkit.co/videos/preview/mixkit-a-man-recording-a-video-with-a-professional-camera-34586-large.mp4",
+      "https://images.unsplash.com/photo-1574267432553-4b4628081c31?w=1600&q=80",
+    video: SITE_VIDEO_1,
     layout: "left",
     description:
       "Um filme que explora os limites entre o real e o imaginado. Horizonte captura a essência da transformação através de narrativa visual cinematográfica, onde cada frame constrói uma jornada emocional.",
@@ -68,6 +60,7 @@ export const PROJECTS: Project[] = [
     client: "Artista Independente",
     image:
       "https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=1600&q=80",
+    video: SITE_VIDEO_2,
     layout: "full",
     description:
       "Clipe musical com linguagem visual ousada e atmosfera densa. Eclipse utiliza luz e sombra como elementos narrativos, criando uma experiência sensorial que acompanha cada nota da composição.",
@@ -80,7 +73,8 @@ export const PROJECTS: Project[] = [
     year: "2024",
     client: "Plataforma Digital",
     image:
-      "https://images.unsplash.com/photo-1611162616305-c69b3fa7dbc2?w=1600&q=80",
+      "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1600&q=80",
+    video: SITE_VIDEO_1,
     layout: "right",
     description:
       "Série de conteúdos digitais desenvolvida para múltiplas plataformas. Resonância mantém identidade visual coesa enquanto adapta a narrativa para cada formato e audiência.",
@@ -93,7 +87,8 @@ export const PROJECTS: Project[] = [
     year: "2024",
     client: "Festival de Cinema",
     image:
-      "https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=1600&q=80",
+      "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1600&q=80",
+    video: SITE_VIDEO_2,
     layout: "offset",
     description:
       "Curta-metragem cinematográfico que investiga temas de mudança e identidade. Metamorfose foi produzido com abordagem autoral, priorizando composição visual e ritmo narrativo.",
@@ -107,6 +102,7 @@ export const PROJECTS: Project[] = [
     client: "Instituição Cultural",
     image:
       "https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=1600&q=80",
+    video: SITE_VIDEO_1,
     layout: "left",
     description:
       "Documentário visual em formato experimental. Fragmentos entrelaça memória, arquitetura e movimento urbano em uma montagem que questiona a linearidade do tempo.",
@@ -186,119 +182,41 @@ export const SERVICES: Service[] = [
   {
     id: "clipes",
     title: "Clipes Musicais",
+    description:
+      "Narrativas visuais que amplificam a música — ritmo, atmosfera e direção de arte alinhados ao artista.",
     image:
-      "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&q=80",
+      "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1600&q=80",
   },
   {
     id: "publicidade",
     title: "Filmes Publicitários",
+    description:
+      "Campanhas com linguagem cinematográfica para marcas que querem ser lembradas, não só vistas.",
     image:
-      "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1200&q=80",
+      "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1600&q=80",
   },
   {
     id: "digital",
     title: "Conteúdo Digital",
+    description:
+      "Peças ágeis para redes e plataformas, sem abrir mão de intenção estética e storytelling.",
     image:
-      "https://images.unsplash.com/photo-1611162616475-46b635cb6868?w=1200&q=80",
+      "https://images.unsplash.com/photo-1611162616475-46b635cb6868?w=1600&q=80",
   },
   {
     id: "audiovisual",
     title: "Produções Audiovisuais",
+    description:
+      "Do briefing à entrega final: direção, fotografia, som e pós-produção em um fluxo único.",
     image:
-      "https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?w=1200&q=80",
+      "https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?w=1600&q=80",
   },
   {
     id: "cinema",
     title: "Projetos Cinematográficos",
+    description:
+      "Curtas, documentários e peças autorais — projetos que pedem tempo, olhar e transformação.",
     image:
-      "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1200&q=80",
-  },
-];
-
-export const SERVICE_GRID: ServiceGridItem[] = [
-  {
-    id: "01",
-    slug: "eclipse",
-    image:
-      "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&q=80",
-    title: "Clipes Musicais",
-    gridColumn: "1 / 3",
-    gridRow: "1 / 3",
-  },
-  {
-    id: "02",
-    slug: "horizonte",
-    image:
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80",
-    gridColumn: "1 / 2",
-    gridRow: "3 / 5",
-  },
-  {
-    id: "03",
-    slug: "ressonancia",
-    image:
-      "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&q=80",
-    gridColumn: "2 / 3",
-    gridRow: "3 / 5",
-  },
-  {
-    id: "04",
-    slug: "horizonte",
-    image:
-      "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1200&q=80",
-    title: "Filmes Publicitários",
-    gridColumn: "3 / 5",
-    gridRow: "1 / 5",
-  },
-  {
-    id: "05",
-    slug: "metamorfose",
-    image:
-      "https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=1200&q=80",
-    title: "Conteúdo Digital",
-    gridColumn: "1 / 3",
-    gridRow: "5 / 7",
-  },
-  {
-    id: "06",
-    slug: "fragmentos",
-    image:
-      "https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=800&q=80",
-    gridColumn: "1 / 2",
-    gridRow: "7 / 9",
-  },
-  {
-    id: "07",
-    slug: "eclipse",
-    image:
-      "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&q=80",
-    gridColumn: "2 / 3",
-    gridRow: "7 / 9",
-  },
-  {
-    id: "08",
-    slug: "ressonancia",
-    image:
-      "https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?w=1200&q=80",
-    title: "Produções Audiovisuais",
-    gridColumn: "3 / 5",
-    gridRow: "5 / 9",
-  },
-  {
-    id: "09",
-    slug: "metamorfose",
-    image:
-      "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1200&q=80",
-    title: "Projetos Cinematográficos",
-    gridColumn: "1 / 3",
-    gridRow: "9 / 12",
-  },
-  {
-    id: "10",
-    slug: "fragmentos",
-    image:
-      "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1200&q=80",
-    gridColumn: "3 / 5",
-    gridRow: "9 / 12",
+      "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1600&q=80",
   },
 ];
