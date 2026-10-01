@@ -6,7 +6,7 @@ import Image from "next/image";
 type PageHeroProps = {
   title: string;
   subtitle: string;
-  number: string;
+  number?: string;
   image?: string;
   video?: string;
 };
@@ -52,10 +52,14 @@ export function PageHero({ title, subtitle, number, image, video }: PageHeroProp
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.3 }}
           >
-            <span className="text-[10px] tracking-[0.3em] uppercase text-muted">
-              {number}
-            </span>
-            <span className="h-px w-12 bg-white/10" />
+            {number ? (
+              <>
+                <span className="text-[10px] tracking-[0.3em] uppercase text-muted">
+                  {number}
+                </span>
+                <span className="h-px w-12 bg-white/10" />
+              </>
+            ) : null}
             <span className="text-[10px] tracking-[0.3em] uppercase text-white/30">
               {subtitle}
             </span>

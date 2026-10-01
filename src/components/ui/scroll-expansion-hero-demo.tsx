@@ -8,10 +8,10 @@ import {
 } from "@/components/ui/il-capo-works";
 import { AsymmetricGallery } from "@/components/ui/asymmetric-gallery";
 
-import { SITE_VIDEO_1 } from "@/lib/data";
+import { PORTFOLIO_VIDEOS } from "@/lib/portfolio-videos";
 
 const media = {
-  src: SITE_VIDEO_1,
+  src: PORTFOLIO_VIDEOS[0],
   poster:
     "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1280&q=80",
 };

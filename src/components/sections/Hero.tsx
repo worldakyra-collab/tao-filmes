@@ -63,7 +63,7 @@ export function Hero() {
         >
           <span className="h-px w-8 bg-brand-green" />
           <p className="text-sm tracking-[0.15em] uppercase text-white/50">
-            São Paulo, Brasil
+            Belém do Pará, Brasil
           </p>
           <span className="h-px w-8 bg-brand-blue" />
         </motion.div>

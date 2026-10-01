@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import TesteScrollExpansionDemo from "@/components/ui/scroll-expansion-hero-demo";
 
 export const metadata: Metadata = {
-  title: "Teste 2 — Scroll Expansion",
+  title: "Obras — TAO Filmes",
   description: "Página de teste 2 do componente ScrollExpandMedia.",
 };
 

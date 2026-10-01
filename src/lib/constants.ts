@@ -1,9 +1,12 @@
 export const BRAND = {
   name: "TAO Filmes",
   tagline: "Transformação em movimento",
-  email: "contato@toafilmes.com",
-  instagram: "https://instagram.com/toafilmes",
-  vimeo: "https://vimeo.com/toafilmes",
+  email: "coletivo.tao.filmes@gmail.com",
+  phone: "91983181045",
+  phoneDisplay: "(91) 98318-1045",
+  whatsapp: "https://wa.me/5591983181045",
+  instagram: "https://instagram.com/tao_filmes",
+  youtube: "https://www.youtube.com/@TaoFilmes",
 } as const;
 
 export const COLORS = {
@@ -16,8 +19,9 @@ export const COLORS = {
 export const SITE_MENU_ITEMS = [
   { label: "Início", href: "/inicio" },
   { label: "Sobre", href: "/sobre" },
+  { label: "Humana", href: "/humana" },
   { label: "Contato", href: "/contato" },
-  { label: "Teste 2", href: "/teste-2" },
+  { label: "Obras", href: "/teste-2" },
 ] as const;
 
 /** @deprecated use SITE_MENU_ITEMS — mantido como alias para compatibilidade */

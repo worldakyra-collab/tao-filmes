@@ -1,15 +1,10 @@
-import { Barlow, Oswald } from "next/font/google";
+import { Barlow } from "next/font/google";
+import { Header } from "@/components/layout/Header";
 
 const barlow = Barlow({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["300", "400", "500", "600"],
   variable: "--font-inicio-sans",
-});
-
-const oswald = Oswald({
-  subsets: ["latin", "latin-ext"],
-  weight: ["500", "600", "700"],
-  variable: "--font-inicio-display",
 });
 
 export default function InicioLayout({
@@ -18,9 +13,8 @@ export default function InicioLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div
-      className={`${barlow.variable} ${oswald.variable} h-dvh overflow-hidden bg-black text-white`}
-    >
+    <div className={`${barlow.variable} h-dvh overflow-hidden bg-black text-white`}>
+      <Header />
       {children}
     </div>
   );

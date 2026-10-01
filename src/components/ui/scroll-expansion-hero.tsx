@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { MediaCover } from "@/components/ui/MediaCover";
 import {
   motion,
   useMotionTemplate,
@@ -19,6 +20,25 @@ interface ScrollExpandMediaProps {
   shrinkViewportRatio?: number;
 }
 
+function MarqueeMark() {
+  return (
+    <span
+      aria-hidden
+      className="mx-[0.28em] inline-block h-[0.78em] w-[0.98em] shrink-0 bg-current"
+      style={{
+        WebkitMaskImage: "url(/camaleao.svg)",
+        maskImage: "url(/camaleao.svg)",
+        WebkitMaskRepeat: "no-repeat",
+        maskRepeat: "no-repeat",
+        WebkitMaskPosition: "center",
+        maskPosition: "center",
+        WebkitMaskSize: "contain",
+        maskSize: "contain",
+      }}
+    />
+  );
+}
+
 function MarqueeRow({
   text,
   direction,
@@ -26,29 +46,30 @@ function MarqueeRow({
   text: string;
   direction: "left" | "right";
 }) {
-  const chunk = `${text}  ·  `.repeat(10);
+  const marks = Array.from({ length: 8 }, (_, index) => index);
 
   return (
     <div className="w-full overflow-hidden whitespace-nowrap">
       <motion.div
-        className="flex w-max will-change-transform"
+        className="flex w-max items-center will-change-transform"
         animate={
-          direction === "left"
-            ? { x: ["0%", "-50%"] }
-            : { x: ["-50%", "0%"] }
+          direction === "left" ? { x: ["0%", "-50%"] } : { x: ["-50%", "0%"] }
         }
-        transition={{
-          duration: 55,
-          ease: "linear",
-          repeat: Infinity,
-        }}
+        transition={{ duration: 55, ease: "linear", repeat: Infinity }}
       >
-        <span className="pr-8 font-[family-name:var(--font-dm-sans)] text-[clamp(2.75rem,8vw,6rem)] font-bold tracking-[0.12em] text-white uppercase">
-          {chunk}
-        </span>
-        <span className="pr-8 font-[family-name:var(--font-dm-sans)] text-[clamp(2.75rem,8vw,6rem)] font-bold tracking-[0.12em] text-white uppercase">
-          {chunk}
-        </span>
+        {[0, 1].map((copy) => (
+          <span
+            key={copy}
+            className="flex items-center font-serif text-[clamp(2.4rem,6.5vw,5.75rem)] leading-none tracking-[-0.02em] text-white/20 uppercase"
+          >
+            {marks.map((index) => (
+              <span key={index} className="flex items-center">
+                {text}
+                <MarqueeMark />
+              </span>
+            ))}
+          </span>
+        ))}
       </motion.div>
     </div>
   );
@@ -61,7 +82,6 @@ function MarqueeRow({
 const ScrollExpandMedia = ({
   mediaType = "video",
   mediaSrc,
-  posterSrc,
   title,
   marqueeText = "TAO FILMES",
   shrinkViewportRatio = 0.9,
@@ -95,6 +115,7 @@ const ScrollExpandMedia = ({
   const mediaHeight = useTransform(scrollProgress, [0, 1], [viewport.h, endH]);
   const borderRadius = useTransform(scrollProgress, [0, 1], [0, 18]);
   const marqueeOpacity = useTransform(scrollProgress, [0.1, 0.45, 1], [0, 1, 1]);
+  const scrollHintOpacity = useTransform(scrollProgress, [0, 0.1], [1, 0]);
   const mediaRadius = useMotionTemplate`${borderRadius}px`;
 
   // Fade quando os trabalhos começam a cobrir o hero
@@ -111,16 +132,19 @@ const ScrollExpandMedia = ({
       style={mounted ? { opacity: coverFade } : undefined}
     >
       <motion.div
-        className="pointer-events-none absolute inset-0 z-0 flex flex-col items-center justify-center gap-3 md:gap-5"
+        className="pointer-events-none absolute inset-0 z-0"
         style={mounted ? { opacity: marqueeOpacity } : { opacity: 0 }}
         aria-hidden
       >
-        <MarqueeRow text={marqueeText} direction="left" />
-        <MarqueeRow text={marqueeText} direction="right" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 md:gap-5">
+          <MarqueeRow text={marqueeText} direction="left" />
+          <MarqueeRow text={marqueeText} direction="right" />
+        </div>
       </motion.div>
 
+      <div className="absolute inset-0 z-10 flex items-center justify-center">
       <motion.div
-        className="absolute top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 overflow-hidden bg-neutral-900 shadow-[0_20px_60px_rgba(0,0,0,0.35)] will-change-transform"
+        className="overflow-hidden bg-neutral-900 shadow-[0_20px_60px_rgba(0,0,0,0.35)]"
         style={
           mounted
             ? {
@@ -136,38 +160,7 @@ const ScrollExpandMedia = ({
         }
       >
         {mediaType === "video" ? (
-          mediaSrc.includes("youtube.com") ? (
-            <iframe
-              width="100%"
-              height="100%"
-              src={
-                mediaSrc.includes("embed")
-                  ? mediaSrc +
-                    (mediaSrc.includes("?") ? "&" : "?") +
-                    "autoplay=1&mute=1&loop=1&controls=0&showinfo=0&rel=0&disablekb=1&modestbranding=1"
-                  : mediaSrc.replace("watch?v=", "embed/") +
-                    "?autoplay=1&mute=1&loop=1&controls=0&showinfo=0&rel=0&disablekb=1&modestbranding=1&playlist=" +
-                    mediaSrc.split("v=")[1]
-              }
-              className="h-full w-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          ) : (
-            <video
-              src={mediaSrc}
-              poster={posterSrc}
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="auto"
-              className="h-full w-full object-cover"
-              controls={false}
-              disablePictureInPicture
-              disableRemotePlayback
-            />
-          )
+          <MediaCover src={mediaSrc} title={title} className="h-full w-full" />
         ) : (
           <Image
             src={mediaSrc}
@@ -178,6 +171,22 @@ const ScrollExpandMedia = ({
             priority
           />
         )}
+      </motion.div>
+      </div>
+
+      <motion.div
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex flex-col items-center gap-3 bg-gradient-to-t from-black/70 via-black/35 to-transparent pt-24 pb-8 md:pb-10"
+        style={mounted ? { opacity: scrollHintOpacity } : undefined}
+      >
+        <p className="font-[family-name:var(--font-dm-sans)] text-[11px] tracking-[0.32em] text-white uppercase md:text-xs">
+          Role o scroll
+        </p>
+        <motion.span
+          aria-hidden
+          className="block h-8 w-px origin-top bg-white"
+          animate={{ scaleY: [0.35, 1, 0.35], opacity: [0.4, 1, 0.4] }}
+          transition={{ duration: 1.7, ease: "easeInOut", repeat: Infinity }}
+        />
       </motion.div>
     </motion.div>
   );

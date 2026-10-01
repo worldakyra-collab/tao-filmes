@@ -30,10 +30,8 @@ export const HERO_VIDEO = SITE_VIDEO_1;
 export const ABOUT_VIDEO = SITE_VIDEO_2;
 
 export const ABOUT_STATS = [
-  { value: 120, label: "Projetos" },
-  { value: 12, label: "Anos" },
-  { value: 85, label: "Clientes" },
-  { value: 200, label: "Produções" },
+  { value: 9, label: "Anos" },
+  { value: 60, label: "Projetos" },
 ] as const;
 
 export const PROJECTS: Project[] = [

@@ -1,17 +1,17 @@
 "use client";
 
+import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import { CountUp } from "@/components/ui/CountUp";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
-import { ABOUT_STATS } from "@/lib/data";
 
-const MANIFESTO = [
-  "Somos transformação.",
-  "Adaptamos. Evoluímos.",
-  "Cada frame, uma mudança.",
-];
+const GIOVANNI_MARKS = [
+  { value: "9", label: "Anos" },
+  { value: "2022", label: "UnB" },
+  { value: "2023", label: "ESCAC" },
+  { value: "2026", label: "Dandara" },
+] as const;
 
 type AboutProps = {
   standalone?: boolean;
@@ -25,7 +25,7 @@ export function About({ standalone = false }: AboutProps) {
   });
 
   const lineWidth = useTransform(scrollYProgress, [0.2, 0.6], ["0%", "100%"]);
-  const bgX = useTransform(scrollYProgress, [0, 0.55, 1], ["18vw", "-8vw", "-28vw"]);
+  const bgX = useTransform(scrollYProgress, [0, 1], ["4vw", "-2vw"]);
   const bgOpacity = useTransform(
     scrollYProgress,
     [0, 0.2, 0.55, 0.85],
@@ -44,25 +44,14 @@ export function About({ standalone = false }: AboutProps) {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
           <div className="lg:col-span-5">
-            <Reveal>
-              <p className="text-xs tracking-[0.3em] uppercase text-muted mb-8">
-                Manifesto
-              </p>
-            </Reveal>
-
-            <div className="space-y-6 md:space-y-10">
-              {MANIFESTO.map((line, index) => (
-                <Reveal key={line} delay={index * 0.15}>
-                  <motion.p
-                    className="font-serif text-4xl md:text-6xl lg:text-7xl tracking-tight text-balance leading-[1.1]"
-                    whileInView={{ opacity: [0.3, 1] }}
-                    viewport={{ once: true, margin: "-50px" }}
-                    transition={{ duration: 1 }}
-                  >
-                    {line}
-                  </motion.p>
-                </Reveal>
-              ))}
+            <div className="relative aspect-[4/5] overflow-hidden rounded-[1.75rem] lg:aspect-auto lg:h-full lg:min-h-[640px]">
+              <Image
+                src="/sobre-retrato.png"
+                alt="Giovanni Ruggeri, fundador da TAO Filmes"
+                fill
+                sizes="(max-width: 1024px) 100vw, 40vw"
+                className="object-cover object-[center_20%]"
+              />
             </div>
           </div>
 
@@ -73,30 +62,35 @@ export function About({ standalone = false }: AboutProps) {
                   className="absolute left-0 top-0 w-px bg-brand-green"
                   style={{ height: lineWidth }}
                 />
-                <p className="text-base md:text-lg text-white/50 leading-relaxed max-w-md">
-                  TAO nasceu da ideia de constante mudança. Como o movimento
-                  que define a vida, transformamos visões em imagens que
-                  permanecem.
+                <p className="text-xs tracking-[0.28em] text-white/40 uppercase">
+                  Giovanni Ruggeri
                 </p>
-                <p className="mt-8 text-sm tracking-[0.15em] uppercase text-white/30">
-                  Produtora audiovisual — São Paulo
+                <p className="mt-3 text-sm tracking-[0.16em] text-white/70 uppercase">
+                  Fundador | Diretor executivo
+                </p>
+                <p className="mt-6 text-base leading-relaxed text-white/50 md:text-lg max-w-md">
+                  Graduado em Audiovisual pela UnB (2022) e pós-graduado em
+                  Direção Cinematográfica pela ESCAC, na Espanha (2023). Atua
+                  há 9 anos no setor, entre roteiro, direção, edição e trilha
+                  sonora, em ficção, documentário, publicidade, animação,
+                  videoclipe e podcast. Dirigiu os curtas Invisíveis, premiado
+                  no 13º Festival Taguatinga de Cinema, e Uma Droga Chamada
+                  Amor, selecionado para seis festivais. É criador de Dandara,
+                  premiado no Grande Prêmio de Roteiro do Festival de Sorocaba
+                  (2026).
                 </p>
               </div>
             </Reveal>
 
             <Reveal delay={0.5} className="mt-16 md:mt-24">
               <div className="grid grid-cols-2 gap-x-12 gap-y-10 md:gap-x-16 md:gap-y-12">
-                {ABOUT_STATS.map((stat, index) => (
-                  <div key={stat.label}>
-                    <p className="font-serif text-5xl md:text-6xl tracking-tight tabular-nums">
-                      <CountUp
-                        end={stat.value}
-                        suffix={stat.label === "Projetos" ? "+" : ""}
-                        duration={2 + index * 0.15}
-                      />
+                {GIOVANNI_MARKS.map((mark) => (
+                  <div key={mark.label}>
+                    <p className="font-serif text-5xl tracking-tight tabular-nums md:text-6xl">
+                      {mark.value}
                     </p>
-                    <p className="mt-2 text-[10px] tracking-[0.3em] uppercase text-muted">
-                      {stat.label}
+                    <p className="mt-2 text-[10px] tracking-[0.3em] text-muted uppercase">
+                      {mark.label}
                     </p>
                   </div>
                 ))}
@@ -107,8 +101,12 @@ export function About({ standalone = false }: AboutProps) {
       </div>
 
       <motion.div
-        className="absolute right-0 top-1/2 -translate-y-1/2 font-serif pointer-events-none select-none z-0 flex flex-col items-end leading-[0.82]"
-        style={{ x: bgX, opacity: bgOpacity }}
+        className="font-watermark pointer-events-none absolute right-0 bottom-24 z-0 flex flex-col items-end leading-[0.82] select-none md:bottom-28"
+        style={{
+          x: bgX,
+          opacity: bgOpacity,
+          fontFamily: "var(--font-instrument-serif), Georgia, serif",
+        }}
       >
         <span className="text-[13vw] md:text-[11vw] lg:text-[9vw] text-white whitespace-nowrap">
           TAO

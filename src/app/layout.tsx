@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DM_Sans, Instrument_Serif } from "next/font/google";
+import { Anton, DM_Sans, Instrument_Serif } from "next/font/google";
 import { PageTransitionProvider } from "@/components/layout/PageTransition";
 import "./globals.css";
 
@@ -9,16 +9,22 @@ const dmSans = DM_Sans({
   weight: ["300", "400", "500", "700"],
 });
 
+const anton = Anton({
+  variable: "--font-anton",
+  subsets: ["latin"],
+  weight: "400",
+});
+
 const instrumentSerif = Instrument_Serif({
   variable: "--font-instrument-serif",
   subsets: ["latin"],
-  weight: ["400"],
+  weight: "400",
 });
 
 export const metadata: Metadata = {
   title: "TAO Filmes — Transformação em movimento",
   description:
-    "Produtora audiovisual premium. Clipes musicais, filmes publicitários, conteúdo digital e produções cinematográficas.",
+    "Produtora audiovisual de Belém do Pará, criada em 2017. Direção, montagem, som e música.",
   openGraph: {
     title: "TAO Filmes",
     description: "Transformação em movimento",
@@ -35,7 +41,7 @@ export default function RootLayout({
     <html
       lang="pt-BR"
       data-scroll-behavior="smooth"
-      className={`${dmSans.variable} ${instrumentSerif.variable} h-full antialiased`}
+      className={`${dmSans.variable} ${anton.variable} ${instrumentSerif.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-background text-foreground">
         <PageTransitionProvider>{children}</PageTransitionProvider>

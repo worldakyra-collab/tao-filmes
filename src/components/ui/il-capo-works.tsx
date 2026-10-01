@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import {
   motion,
   useScroll,
@@ -9,7 +10,8 @@ import {
   type MotionValue,
 } from "framer-motion";
 import { Archivo_Black, Cormorant_Garamond } from "next/font/google";
-import { SITE_VIDEO_1, SITE_VIDEO_2 } from "@/lib/data";
+import { PORTFOLIO_VIDEOS } from "@/lib/portfolio-videos";
+import { MediaCover } from "@/components/ui/MediaCover";
 
 const displaySans = Archivo_Black({
   weight: "400",
@@ -26,6 +28,7 @@ const displaySerif = Cormorant_Garamond({
 
 export type WorkItem = {
   id: string;
+  slug: string;
   title: string;
   subtitle: string;
   client: string;
@@ -36,43 +39,48 @@ export type WorkItem = {
 const WORKS: WorkItem[] = [
   {
     id: "01",
+    slug: "roadside",
     title: "A Tabi Film",
     subtitle: "Iconic Shoe Masterpiece",
     client: "Maison Margiela",
     number: "01",
-    video: SITE_VIDEO_1,
+    video: PORTFOLIO_VIDEOS[0],
   },
   {
     id: "02",
+    slug: "olhar",
     title: "Il Tappeto Verde",
     subtitle: "Junior Project",
     client: "Juventus — Artissima",
     number: "02",
-    video: SITE_VIDEO_2,
+    video: PORTFOLIO_VIDEOS[1],
   },
   {
     id: "03",
+    slug: "nagano-prefeature",
     title: "Dans Valentino",
     subtitle: "Le Pavillon Des Folies",
     client: "Valentino",
     number: "03",
-    video: SITE_VIDEO_1,
+    video: PORTFOLIO_VIDEOS[2],
   },
   {
     id: "04",
+    slug: "alem-do-horizonte",
     title: "Mosaico",
     subtitle: "Bren Heritage Film",
     client: "Buccellati",
     number: "04",
-    video: SITE_VIDEO_2,
+    video: PORTFOLIO_VIDEOS[3],
   },
   {
     id: "05",
+    slug: "nos-bastidores",
     title: "Maison De L'Amour",
     subtitle: "A Defining Fashion Film",
     client: "Gucci",
     number: "05",
-    video: SITE_VIDEO_1,
+    video: PORTFOLIO_VIDEOS[4],
   },
 ];
 
@@ -87,17 +95,17 @@ function titleLines(title: string) {
 }
 
 function WorkVideo({ src, title }: { src: string; title: string }) {
+  return <MediaCover src={src} title={title} />;
+}
+
+function VerTrabalhoButton({ slug }: { slug: string }) {
   return (
-    <video
-      src={src}
-      autoPlay
-      muted
-      loop
-      playsInline
-      preload="metadata"
-      aria-label={title}
-      className="absolute inset-0 h-full w-full object-cover"
-    />
+    <Link
+      href={`/servicos/${slug}`}
+      className="pointer-events-auto mt-8 inline-flex items-center justify-center rounded-full border border-white/40 bg-white/15 px-8 py-3 text-[11px] tracking-[0.24em] text-white uppercase shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] backdrop-blur-md transition-colors duration-300 hover:border-white/60 hover:bg-white/25"
+    >
+      Ver trabalho
+    </Link>
   );
 }
 
@@ -125,6 +133,7 @@ function WorkPanel({ work }: { work: WorkItem }) {
         >
           {work.subtitle}
         </p>
+        <VerTrabalhoButton slug={work.slug} />
       </div>
     </article>
   );
@@ -271,6 +280,12 @@ function StackSlide({
           >
             {work.subtitle}
           </motion.p>
+          <motion.div
+            className="pointer-events-auto"
+            style={{ y: subtitleY, opacity: subtitleOpacity }}
+          >
+            <VerTrabalhoButton slug={work.slug} />
+          </motion.div>
         </div>
       </div>
     </article>

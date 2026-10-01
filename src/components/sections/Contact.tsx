@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState } from "react";
 import { BRAND } from "@/lib/constants";
 import { Reveal } from "@/components/ui/Reveal";
 import { SectionLabel } from "@/components/ui/SectionLabel";
@@ -10,9 +9,13 @@ type ContactProps = {
   standalone?: boolean;
 };
 
-export function Contact({ standalone = false }: ContactProps) {
-  const [focused, setFocused] = useState<string | null>(null);
+const FIELDS = [
+  { id: "name", label: "Nome", type: "text", autoComplete: "name" },
+  { id: "email", label: "Email", type: "email", autoComplete: "email" },
+  { id: "project", label: "Projeto", type: "text", autoComplete: "off" },
+] as const;
 
+export function Contact({ standalone = false }: ContactProps) {
   return (
     <section
       className={`px-6 md:px-12 py-24 md:py-32 ${
@@ -31,11 +34,27 @@ export function Contact({ standalone = false }: ContactProps) {
             </Reveal>
             <Reveal delay={0.2}>
               <p className="text-white/40 text-sm max-w-sm leading-relaxed">
-                Conte-nos sobre seu projeto. Responderemos em até 48 horas.
+                Produtora de Belém do Pará. Fale com o Giovanni pelo WhatsApp
+                ou por e-mail.
               </p>
             </Reveal>
 
             <Reveal delay={0.3} className="mt-12 space-y-6">
+              <a
+                href={BRAND.whatsapp}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block group"
+              >
+                <span className="text-[10px] tracking-[0.3em] uppercase text-muted block mb-2">
+                  WhatsApp
+                </span>
+                <span className="text-lg md:text-xl text-white/70 group-hover:text-white transition-colors duration-500">
+                  {BRAND.phoneDisplay}
+                </span>
+                <span className="block h-px w-0 group-hover:w-full max-w-xs bg-brand-green transition-all duration-700 mt-2" />
+              </a>
+
               <a
                 href={`mailto:${BRAND.email}`}
                 className="block group"
@@ -59,12 +78,12 @@ export function Contact({ standalone = false }: ContactProps) {
                   Instagram
                 </a>
                 <a
-                  href={BRAND.vimeo}
+                  href={BRAND.youtube}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs tracking-[0.2em] uppercase text-white/30 hover:text-brand-blue transition-colors duration-500"
                 >
-                  Vimeo
+                  YouTube
                 </a>
               </div>
             </Reveal>
@@ -76,54 +95,58 @@ export function Contact({ standalone = false }: ContactProps) {
                 className="space-y-12"
                 onSubmit={(e) => e.preventDefault()}
               >
-                {[
-                  { id: "name", label: "Nome", type: "text" },
-                  { id: "email", label: "Email", type: "email" },
-                  { id: "project", label: "Projeto", type: "text" },
-                ].map((field) => (
+                <style>{`
+                  .contact-field {
+                    color-scheme: dark;
+                  }
+                  .contact-field:-webkit-autofill,
+                  .contact-field:-webkit-autofill:hover,
+                  .contact-field:-webkit-autofill:focus {
+                    -webkit-text-fill-color: #f5f5f0 !important;
+                    caret-color: #f5f5f0;
+                    box-shadow: 0 0 0 1000px #0a0a0a inset !important;
+                    -webkit-box-shadow: 0 0 0 1000px #0a0a0a inset !important;
+                    transition: background-color 99999s ease-out 0s;
+                  }
+                  .contact-field:-webkit-autofill + label {
+                    top: -1.5rem !important;
+                    color: #3d6b4f !important;
+                  }
+                `}</style>
+                {FIELDS.map((field) => (
                   <div key={field.id} className="relative">
+                    <input
+                      id={field.id}
+                      name={field.id}
+                      type={field.type}
+                      autoComplete={field.autoComplete}
+                      placeholder=" "
+                      className="contact-field peer w-full border-b border-white/10 bg-transparent py-4 text-white outline-none transition-colors duration-500 focus:border-white/30"
+                    />
                     <label
                       htmlFor={field.id}
-                      className={`absolute left-0 transition-all duration-300 text-[10px] tracking-[0.3em] uppercase ${
-                        focused === field.id
-                          ? "text-brand-green -top-6"
-                          : "text-muted top-4"
-                      }`}
+                      className="pointer-events-none absolute top-4 left-0 text-[10px] tracking-[0.3em] text-muted uppercase transition-all duration-300 peer-focus:-top-6 peer-focus:text-brand-green peer-[:not(:placeholder-shown)]:-top-6 peer-[:not(:placeholder-shown)]:text-brand-green"
                     >
                       {field.label}
                     </label>
-                    <input
-                      id={field.id}
-                      type={field.type}
-                      className="w-full bg-transparent border-b border-white/10 py-4 text-white outline-none focus:border-white/30 transition-colors duration-500"
-                      onFocus={() => setFocused(field.id)}
-                      onBlur={(e) =>
-                        setFocused(e.target.value ? field.id : null)
-                      }
-                    />
                   </div>
                 ))}
 
                 <div className="relative">
+                  <textarea
+                    id="message"
+                    name="message"
+                    rows={4}
+                    autoComplete="off"
+                    placeholder=" "
+                    className="contact-field peer w-full resize-none border-b border-white/10 bg-transparent py-4 text-white outline-none transition-colors duration-500 focus:border-white/30"
+                  />
                   <label
                     htmlFor="message"
-                    className={`absolute left-0 transition-all duration-300 text-[10px] tracking-[0.3em] uppercase ${
-                      focused === "message"
-                        ? "text-brand-green -top-6"
-                        : "text-muted top-4"
-                    }`}
+                    className="pointer-events-none absolute top-4 left-0 text-[10px] tracking-[0.3em] text-muted uppercase transition-all duration-300 peer-focus:-top-6 peer-focus:text-brand-green peer-[:not(:placeholder-shown)]:-top-6 peer-[:not(:placeholder-shown)]:text-brand-green"
                   >
                     Mensagem
                   </label>
-                  <textarea
-                    id="message"
-                    rows={4}
-                    className="w-full bg-transparent border-b border-white/10 py-4 text-white outline-none focus:border-white/30 transition-colors duration-500 resize-none"
-                    onFocus={() => setFocused("message")}
-                    onBlur={(e) =>
-                      setFocused(e.target.value ? "message" : null)
-                    }
-                  />
                 </div>
 
                 <motion.button

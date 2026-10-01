@@ -50,15 +50,6 @@ function pathOnly(href: string) {
   }
 }
 
-function samePage(href: string) {
-  const next = new URL(href, window.location.origin);
-  return (
-    next.pathname === window.location.pathname &&
-    next.search === window.location.search &&
-    next.hash === window.location.hash
-  );
-}
-
 function isInternalNavLink(anchor: HTMLAnchorElement) {
   if (anchor.target && anchor.target !== "_self") return false;
   if (anchor.hasAttribute("download")) return false;
@@ -83,6 +74,15 @@ function isInternalNavLink(anchor: HTMLAnchorElement) {
   }
 }
 
+function samePage(href: string) {
+  const next = new URL(href, window.location.origin);
+  return (
+    next.pathname === window.location.pathname &&
+    next.search === window.location.search &&
+    next.hash === window.location.hash
+  );
+}
+
 export function PageTransitionProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -93,71 +93,25 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
   const busy = useRef(false);
   const expectPath = useRef<string | null>(null);
   const phaseRef = useRef(phase);
+  const pathnameRef = useRef(pathname);
   phaseRef.current = phase;
+  pathnameRef.current = pathname;
 
-  const navigate = useCallback((href: string) => {
-    const target = normalizePath(href);
-    if (busy.current) return;
-    if (samePage(target)) return;
+  const navigate = useCallback(
+    (href: string) => {
+      const target = normalizePath(href);
+      if (busy.current) return;
+      if (samePage(target)) return;
 
-    busy.current = true;
-    pendingHref.current = target;
-    expectPath.current = pathOnly(target);
-    setArrivedViaCurtain(false);
-    setPhase("closing");
-  }, []);
-
-  const onClosed = useCallback(() => {
-    const href = pendingHref.current;
-    if (!href) {
-      busy.current = false;
-      setPhase("hidden");
-      return;
-    }
-
-    setPhase("covered");
-    router.push(href);
-  }, [router]);
-
-  const onOpened = useCallback(() => {
-    pendingHref.current = null;
-    expectPath.current = null;
-    busy.current = false;
-    setPhase("hidden");
-  }, []);
-
-  // Cortina coberta + rota nova → abre.
-  useEffect(() => {
-    if (phase !== "covered") return;
-    if (!expectPath.current) return;
-    if (pathname !== expectPath.current) return;
-
-    setArrivedViaCurtain(true);
-    const timer = window.setTimeout(() => {
-      setPhase("opening");
-    }, CURTAIN_HOLD_MS);
-    return () => window.clearTimeout(timer);
-  }, [pathname, phase]);
-
-  // Se o push atrasar, tenta de novo; se travar, força abertura.
-  useEffect(() => {
-    if (phase !== "covered") return;
-
-    const retry = window.setTimeout(() => {
-      if (phaseRef.current !== "covered") return;
-      if (pendingHref.current) router.push(pendingHref.current);
-    }, 600);
-
-    const failSafe = window.setTimeout(() => {
-      if (phaseRef.current !== "covered") return;
-      setPhase("opening");
-    }, 3500);
-
-    return () => {
-      window.clearTimeout(retry);
-      window.clearTimeout(failSafe);
-    };
-  }, [phase, router]);
+      busy.current = true;
+      pendingHref.current = target;
+      expectPath.current = pathOnly(target);
+      setArrivedViaCurtain(false);
+      setPhase("closing");
+      router.push(target);
+    },
+    [router],
+  );
 
   useEffect(() => {
     const onClick = (event: MouseEvent) => {
@@ -185,6 +139,61 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
     document.addEventListener("click", onClick, true);
     return () => document.removeEventListener("click", onClick, true);
   }, [navigate]);
+
+  const onClosed = useCallback(() => {
+    const href = pendingHref.current;
+    if (!href) {
+      busy.current = false;
+      setPhase("hidden");
+      return;
+    }
+
+    setPhase("covered");
+  }, []);
+
+  const onOpened = useCallback(() => {
+    pendingHref.current = null;
+    expectPath.current = null;
+    busy.current = false;
+    setPhase("hidden");
+  }, []);
+
+  // Cortina coberta + rota nova → abre.
+  useEffect(() => {
+    if (phase !== "covered") return;
+    if (!expectPath.current) return;
+    if (pathname !== expectPath.current) return;
+
+    setArrivedViaCurtain(true);
+    const timer = window.setTimeout(() => {
+      setPhase("opening");
+    }, CURTAIN_HOLD_MS);
+    return () => window.clearTimeout(timer);
+  }, [pathname, phase]);
+
+  // A cortina só abre quando a rota nova já chegou. Enquanto isso, fica branca.
+  useEffect(() => {
+    if (phase !== "covered") return;
+    if (!expectPath.current) return;
+    if (pathname === expectPath.current) return;
+
+    const retry = window.setTimeout(() => {
+      if (phaseRef.current !== "covered") return;
+      if (pathnameRef.current === expectPath.current) return;
+      if (pendingHref.current) router.push(pendingHref.current);
+    }, 1200);
+
+    const hard = window.setTimeout(() => {
+      if (phaseRef.current !== "covered") return;
+      if (pathnameRef.current === expectPath.current) return;
+      if (pendingHref.current) window.location.assign(pendingHref.current);
+    }, 8000);
+
+    return () => {
+      window.clearTimeout(retry);
+      window.clearTimeout(hard);
+    };
+  }, [phase, pathname, router]);
 
   useEffect(() => {
     // Limpa overflow preso de navegações anteriores (HMR / race de locks).

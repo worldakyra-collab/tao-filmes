@@ -44,7 +44,7 @@ export function PageCurtain({ phase, onClosed, onOpened }: PageCurtainProps) {
   return (
     <div
       className={`pointer-events-auto fixed inset-0 z-[100] flex flex-col ${
-        phase === "opening" ? "bg-transparent" : "bg-white"
+        phase === "covered" ? "bg-white" : "bg-transparent"
       }`}
       aria-hidden
     >
