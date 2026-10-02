@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { CoverEmbedStyle } from "@/components/ui/cover-embed-style";
 import { loadYouTubeApi, type YtPlayer } from "@/lib/youtube-api";
 
 function SpeakerIcon({ muted }: { muted: boolean }) {
@@ -30,16 +31,41 @@ export function YoutubeFrame({
   controls?: boolean;
   className?: string;
 }) {
+  const boxRef = useRef<HTMLDivElement>(null);
   const hostRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<YtPlayer | null>(null);
+  const [near, setNear] = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
   const fillRef = useRef<HTMLDivElement>(null);
   const headRef = useRef<HTMLDivElement>(null);
   const userPaused = useRef(false);
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(true);
+  const [poster, setPoster] = useState(
+    `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`,
+  );
 
   useEffect(() => {
+    setPoster(`https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`);
+  }, [videoId]);
+
+  useEffect(() => {
+    const node = boxRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setNear(entry.isIntersecting),
+      { threshold: 0.6 },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!near) {
+      setPlaying(false);
+      return;
+    }
+
     let cancelled = false;
     const host = hostRef.current;
     if (!host) return;
@@ -63,16 +89,19 @@ export function YoutubeFrame({
           disablekb: 1,
           fs: 0,
           cc_load_policy: 0,
+          vq: "hd2160",
           origin: window.location.origin,
         },
         events: {
           onReady: (event) => {
             event.target.mute();
+            event.target.setPlaybackQuality?.("hd2160");
             event.target.playVideo();
           },
           onStateChange: (event) => {
             const isPlaying = event.data === YT.PlayerState.PLAYING;
             setPlaying(isPlaying);
+            if (isPlaying) event.target.setPlaybackQuality?.("hd2160");
             if (event.data === YT.PlayerState.ENDED) event.target.playVideo();
           },
         },
@@ -83,8 +112,9 @@ export function YoutubeFrame({
       cancelled = true;
       playerRef.current?.destroy();
       playerRef.current = null;
+      setPlaying(false);
     };
-  }, [videoId]);
+  }, [near, videoId]);
 
   useEffect(() => {
     if (!controls) return;
@@ -141,13 +171,13 @@ export function YoutubeFrame({
   }
 
   return (
-    <div className={`relative overflow-hidden bg-black ${className}`}>
-      <div className="pointer-events-none absolute top-1/2 left-1/2 h-full w-full -translate-x-1/2 -translate-y-1/2 scale-[1.42]">
-        <div ref={hostRef} className="h-full w-full" />
-      </div>
+    <div ref={boxRef} className={`cover-embed relative overflow-hidden bg-black ${className}`}>
+      <CoverEmbedStyle />
+      <div ref={hostRef} className="h-full w-full" />
       <img
-        src={`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`}
+        src={poster}
         alt=""
+        onError={() => setPoster(`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`)}
         className={`pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
           playing ? "opacity-0" : "opacity-100"
         }`}

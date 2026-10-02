@@ -50,6 +50,7 @@ export function resolveMedia(
       modestbranding: "1",
       playsinline: "1",
       iv_load_policy: "3",
+      vq: "hd2160",
     });
     return {
       kind: "embed",
@@ -65,6 +66,7 @@ export function resolveMedia(
       muted: "1",
       loop: "1",
       autopause: "0",
+      quality: "4k",
     });
     if (!options?.controls) params.set("background", "1");
     return {

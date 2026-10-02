@@ -8,6 +8,8 @@ type YtPlayer = {
   getCurrentTime: () => number;
   getDuration: () => number;
   destroy: () => void;
+  setPlaybackQuality?: (quality: string) => void;
+  getPlaybackQuality?: () => string;
 };
 
 type YtNamespace = {

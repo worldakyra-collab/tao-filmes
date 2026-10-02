@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { HOME_WORKS, type HomeWork } from "@/lib/home-works";
+import { claimPlayback, onPlaybackSlot, releasePlayback } from "@/lib/playback-budget";
 import { resolveMedia, youtubeId } from "@/lib/portfolio-videos";
 
 const VIMEO_STILL =
@@ -10,7 +11,7 @@ const VIMEO_STILL =
 
 function stillFor(src: string) {
   const youtube = youtubeId(src);
-  if (youtube) return `https://i.ytimg.com/vi/${youtube}/hqdefault.jpg`;
+  if (youtube) return `https://i.ytimg.com/vi/${youtube}/maxresdefault.jpg`;
   if (src.includes("vimeo.com")) return VIMEO_STILL;
   if (src.includes("drive.google.com")) return "/video/reel.jpg";
   return "";
@@ -34,28 +35,51 @@ function ReelLoop({ src }: { src: string }) {
     const video = ref.current;
     if (!video) return;
     video.muted = true;
+    let visible = false;
 
     const show = () => {
       video.style.opacity = "1";
     };
-    video.addEventListener("playing", show);
-
-    const observer = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) {
+    const stopVideo = () => {
+      video.pause();
+      releasePlayback(video);
+      if (video.currentSrc) {
+        video.removeAttribute("src");
+        video.load();
+        video.style.opacity = "0";
+      }
+    };
+    const sync = () => {
+      if (!visible) {
+        stopVideo();
+        return;
+      }
+      if (!claimPlayback(video)) {
         video.pause();
         return;
       }
-      if (!video.getAttribute("src")) {
+      if (!video.currentSrc) {
         video.preload = "auto";
         video.src = src;
       }
       void video.play().catch(() => {});
-    });
+    };
+
+    video.addEventListener("playing", show);
+    const stop = onPlaybackSlot(sync);
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting && entry.intersectionRatio >= 0.35;
+      sync();
+    }, { threshold: [0, 0.35, 0.75] });
     observer.observe(video);
 
     return () => {
+      visible = false;
+      releasePlayback(video);
+      stop();
       video.removeEventListener("playing", show);
       observer.disconnect();
+      video.pause();
     };
   }, [src]);
 
@@ -87,7 +111,19 @@ function WorkCard({ work, clone }: { work: HomeWork; clone?: boolean }) {
       className="group relative block h-full w-full overflow-hidden bg-neutral-950"
     >
       {still ? (
-        <img src={still} alt="" draggable={false} className="absolute inset-0 h-full w-full object-cover" />
+        <img
+          src={still}
+          alt=""
+          draggable={false}
+          onError={(event) => {
+            const image = event.currentTarget;
+            const youtube = youtubeId(work.video);
+            if (!youtube || image.dataset.fallback === "1") return;
+            image.dataset.fallback = "1";
+            image.src = `https://i.ytimg.com/vi/${youtube}/hqdefault.jpg`;
+          }}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
       ) : null}
       {media.kind === "file" ? <ReelLoop src={media.src} /> : null}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent px-4 pt-12 pb-3.5 transition-opacity duration-300 group-hover:opacity-0 group-focus-visible:opacity-0">
@@ -111,12 +147,10 @@ function MarqueeRow({
   works,
   phase,
   enter,
-  cardClassName,
 }: {
   works: HomeWork[];
   phase: string;
   enter: string;
-  cardClassName: string;
 }) {
   const duration = `${Math.round(12 * works.length)}s`;
 
@@ -129,7 +163,7 @@ function MarqueeRow({
         {[0, 1].map((copy) => (
           <div key={copy} className="flex h-full gap-[7px] pr-[7px]" aria-hidden={copy === 1 || undefined}>
             {works.map((work) => (
-              <div key={`${work.slug}-${copy}`} className={`h-full shrink-0 ${cardClassName}`}>
+              <div key={`${work.slug}-${copy}`} className="h-full w-[78vw] shrink-0 sm:w-[32vw] lg:w-[27vw]">
                 <WorkCard work={work} clone={copy === 1} />
               </div>
             ))}
@@ -152,11 +186,6 @@ export function InicioHero() {
             works={works}
             phase={ROW_PHASE[index] ?? "0s"}
             enter={ROW_ENTER[index] ?? "0s"}
-            cardClassName={
-              works.length <= 3
-                ? "w-[86vw] sm:w-[36vw]"
-                : "w-[78vw] sm:w-[30vw] lg:w-[27vw]"
-            }
           />
         ))}
       </div>

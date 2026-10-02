@@ -87,6 +87,7 @@ const ScrollExpandMedia = ({
   shrinkViewportRatio = 0.9,
 }: ScrollExpandMediaProps) => {
   const [mounted, setMounted] = useState(false);
+  const [mediaOn, setMediaOn] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [viewport, setViewport] = useState({ w: 1200, h: 800 });
 
@@ -103,17 +104,27 @@ const ScrollExpandMedia = ({
     return () => window.removeEventListener("resize", updateSize);
   }, []);
 
-  const endW = isMobile ? 260 : 320;
-  const endH = isMobile ? 400 : 500;
+  const endW = isMobile ? viewport.w : 320;
+  const endH = isMobile ? viewport.h : 500;
   const shrinkDistance = Math.max(viewport.h * shrinkViewportRatio, 1);
+
+  useEffect(() => {
+    const hideAfter = shrinkDistance + viewport.h * 0.12;
+    const sync = (y: number) => {
+      const next = y < hideAfter;
+      setMediaOn((current) => (current === next ? current : next));
+    };
+    sync(scrollY.get());
+    return scrollY.on("change", sync);
+  }, [scrollY, shrinkDistance, viewport.h]);
 
   const scrollProgress = useTransform(scrollY, [0, shrinkDistance], [0, 1], {
     clamp: true,
   });
 
-  const mediaWidth = useTransform(scrollProgress, [0, 1], ["100%", `${endW}px`]);
-  const mediaHeight = useTransform(scrollProgress, [0, 1], ["100%", `${endH}px`]);
-  const borderRadius = useTransform(scrollProgress, [0, 1], [0, 18]);
+  const mediaWidth = useTransform(scrollProgress, [0, 1], [viewport.w, endW]);
+  const mediaHeight = useTransform(scrollProgress, [0, 1], [viewport.h, endH]);
+  const borderRadius = useTransform(scrollProgress, [0, 1], [0, isMobile ? 0 : 18]);
   const marqueeOpacity = useTransform(scrollProgress, [0.1, 0.45, 1], [0, 1, 1]);
   const scrollHintOpacity = useTransform(scrollProgress, [0, 0.1], [1, 0]);
   const mediaRadius = useMotionTemplate`${borderRadius}px`;
@@ -160,7 +171,7 @@ const ScrollExpandMedia = ({
         }
       >
         {mediaType === "video" ? (
-          <MediaCover src={mediaSrc} title={title} className="h-full w-full" />
+          mediaOn ? <MediaCover src={mediaSrc} title={title} className="h-full w-full" /> : null
         ) : (
           <Image
             src={mediaSrc}

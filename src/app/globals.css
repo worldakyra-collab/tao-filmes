@@ -131,6 +131,24 @@ html:has(#home-showcase) footer {
   }
 }
 
+/* Iframe 16:9 cobre o quadro inteiro, no mesmo corte do object-cover. */
+.cover-embed {
+  overflow: hidden;
+}
+
+.cover-embed iframe {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  width: 100% !important;
+  height: 56.25vw !important;
+  min-width: 177.78vh !important;
+  min-height: 100% !important;
+  max-width: none !important;
+  border: 0;
+  transform: translate(-50%, -50%) !important;
+}
+
 .inicio-marquee-row {
   overflow: hidden;
   animation: inicio-marquee-in 1.35s cubic-bezier(0.22, 1, 0.36, 1) both;

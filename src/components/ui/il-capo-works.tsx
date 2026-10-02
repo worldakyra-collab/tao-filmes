@@ -113,7 +113,7 @@ function WorkPanel({ work }: { work: WorkItem }) {
   const lines = titleLines(work.title);
 
   return (
-    <article className="relative h-dvh w-full min-w-full shrink-0 overflow-hidden bg-black">
+    <article className="relative h-dvh w-screen shrink-0 overflow-hidden bg-black">
       <WorkVideo src={work.video} title={work.title} />
       <div className="absolute inset-0 bg-black/25" />
 
@@ -170,7 +170,7 @@ export function IlCapoWorksRail() {
     >
       <div className="sticky top-0 h-dvh overflow-hidden bg-black">
         <motion.div
-          className="flex h-full will-change-transform"
+          className="flex h-full w-max will-change-transform"
           style={mounted ? { x } : undefined}
         >
           {WORKS.map((work) => (
@@ -214,6 +214,18 @@ function TitleLine({
   );
 }
 
+function usePhone() {
+  const [phone, setPhone] = useState(false);
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 767px)");
+    const sync = () => setPhone(query.matches);
+    sync();
+    query.addEventListener("change", sync);
+    return () => query.removeEventListener("change", sync);
+  }, []);
+  return phone;
+}
+
 function StackSlide({
   work,
   index,
@@ -222,13 +234,14 @@ function StackSlide({
   index: number;
 }) {
   const ref = useRef<HTMLElement>(null);
+  const phone = usePhone();
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "start start"],
   });
 
-  const scale = useTransform(scrollYProgress, [0, 1], [0.82, 1]);
-  const mediaY = useTransform(scrollYProgress, [0, 1], ["10%", "0%"]);
+  const scale = useTransform(scrollYProgress, [0, 1], phone ? [1, 1] : [0.82, 1]);
+  const mediaY = useTransform(scrollYProgress, [0, 1], phone ? ["0%", "0%"] : ["10%", "0%"]);
   const overlay = useTransform(scrollYProgress, [0, 1], [0.5, 0.22]);
   const overlayBg = useMotionTemplate`rgba(0,0,0,${overlay})`;
 
