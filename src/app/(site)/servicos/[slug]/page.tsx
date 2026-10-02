@@ -33,7 +33,7 @@ export default async function ServicoPage({ params }: PageProps) {
         <p className="text-[11px] tracking-[0.28em] text-white/50 uppercase">
           {work.category} / {work.year}
         </p>
-        <h1 className="mt-4 font-serif text-5xl tracking-tight md:text-7xl">
+        <h1 className="mt-4 font-serif text-4xl tracking-tight break-words sm:text-5xl md:text-7xl">
           {work.title}
         </h1>
 

@@ -13,6 +13,7 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   PageCurtain,
   CURTAIN_HOLD_MS,
+  type CurtainPace,
   type CurtainPhase,
 } from "@/components/layout/PageCurtain";
 import { forceUnlockBodyScroll, lockBodyScroll } from "@/lib/scroll-lock";
@@ -86,7 +87,8 @@ function samePage(href: string) {
 export function PageTransitionProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const [phase, setPhase] = useState<CurtainPhase>("hidden");
+  const [phase, setPhase] = useState<CurtainPhase>("covered");
+  const [pace, setPace] = useState<CurtainPace>("full");
   const [arrivedViaCurtain, setArrivedViaCurtain] = useState(false);
 
   const pendingHref = useRef<string | null>(null);
@@ -107,8 +109,9 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
       pendingHref.current = target;
       expectPath.current = pathOnly(target);
       setArrivedViaCurtain(false);
+      setPace("full");
       setPhase("closing");
-      router.push(target);
+      router.prefetch(pathOnly(target));
     },
     [router],
   );
@@ -149,13 +152,23 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
     }
 
     setPhase("covered");
-  }, []);
+    router.push(href);
+  }, [router]);
 
   const onOpened = useCallback(() => {
     pendingHref.current = null;
     expectPath.current = null;
     busy.current = false;
     setPhase("hidden");
+  }, []);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      if (pendingHref.current) return;
+      if (phaseRef.current !== "covered") return;
+      setPhase("opening");
+    }, 16);
+    return () => window.clearTimeout(timer);
   }, []);
 
   // Cortina coberta + rota nova → abre.
@@ -216,7 +229,7 @@ export function PageTransitionProvider({ children }: { children: ReactNode }) {
       value={{ phase, navigate, arrivedViaCurtain }}
     >
       {children}
-      <PageCurtain phase={phase} onClosed={onClosed} onOpened={onOpened} />
+      <PageCurtain phase={phase} pace={pace} onClosed={onClosed} onOpened={onOpened} />
     </PageTransitionContext.Provider>
   );
 }

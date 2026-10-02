@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useRef } from "react";
 import { resolveMedia, youtubeId } from "@/lib/portfolio-videos";
 import { YoutubeFrame } from "@/components/ui/YoutubeFrame";
 
@@ -29,14 +32,41 @@ export function MediaCover({
     );
   }
 
+  return <FileCover src={media.src} title={title} className={className} />;
+}
+
+function FileCover({
+  src,
+  title,
+  className,
+}: {
+  src: string;
+  title?: string;
+  className: string;
+}) {
+  const ref = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = ref.current;
+    if (!video) return;
+    const start = () => {
+      video.muted = true;
+      void video.play().catch(() => {});
+    };
+    start();
+    video.addEventListener("loadeddata", start);
+    return () => video.removeEventListener("loadeddata", start);
+  }, [src]);
+
   return (
     <video
-      src={media.src}
+      ref={ref}
+      src={src}
       autoPlay
       muted
       loop
       playsInline
-      preload="metadata"
+      preload="auto"
       aria-label={title}
       disablePictureInPicture
       disableRemotePlayback

@@ -144,23 +144,61 @@ export function SobreSpotlight() {
   return (
     <section className="relative overflow-hidden bg-black px-6 pt-28 pb-16 text-white md:px-12 md:pt-36 md:pb-24">
       <div className="mx-auto max-w-[1440px]">
-        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-12">
-          <div className="flex items-center gap-4 lg:col-span-5 lg:gap-5">
-            <h2
-              className={`${display.className} text-[clamp(2.4rem,4.2vw,3.8rem)] leading-[0.88] tracking-[-0.03em] uppercase`}
-            >
-              sobre a
-              <br />
-              TAO Filmes
-            </h2>
-            <img
-              src="/camaleao.svg"
-              alt=""
-              className="h-16 w-auto shrink-0 md:h-24"
-            />
+        <div className="relative grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-12">
+          <div className="pointer-events-none absolute inset-x-[-8vw] top-[18rem] z-0 -translate-y-1/2 overflow-hidden lg:top-[58%]">
+            <div className="sobre-marquee-track flex w-max">
+              {[0, 1].map((copy) => (
+                <p
+                  key={copy}
+                  className={`${display.className} pr-6 text-[clamp(2.4rem,6.5vw,5.75rem)] tracking-[-0.02em] whitespace-nowrap text-white/20 uppercase`}
+                >
+                  {MARQUEE.repeat(4)}
+                </p>
+              ))}
+            </div>
           </div>
 
-          <div className="space-y-4 text-sm leading-relaxed text-white/70 md:text-[15px] lg:col-span-7">
+          <div className="relative z-10 lg:col-span-5">
+            <div className="flex items-center gap-4 lg:gap-5">
+              <h2
+                className={`${display.className} text-[clamp(2.4rem,4.2vw,3.8rem)] leading-[0.88] tracking-[-0.03em] uppercase`}
+              >
+                sobre a
+                <br />
+                TAO Filmes
+              </h2>
+              <img
+                src="/camaleao.svg"
+                alt=""
+                className="h-16 w-auto shrink-0 md:h-24"
+              />
+            </div>
+
+            <div className="relative mt-8 mb-8 w-[min(100%,380px)]">
+              <div className="relative aspect-square overflow-hidden rounded-[1.75rem] shadow-[0_24px_60px_rgba(0,0,0,0.45)]">
+                <Image
+                  src="/giovanni.png"
+                  alt="Giovanni Ruggeri, fundador da TAO Filmes"
+                  fill
+                  unoptimized
+                  className="object-cover object-[center_30%]"
+                />
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setGiovanniOpen(true)}
+                className="absolute bottom-0 left-1/2 z-20 inline-flex -translate-x-1/2 translate-y-1/2 items-center gap-3 rounded-full bg-white py-2 pr-2 pl-5 text-sm font-semibold whitespace-nowrap text-black transition-transform hover:scale-[1.03]"
+              >
+                Sobre Giovanni
+                <span className="grid size-8 place-items-center rounded-full bg-black text-white">
+                  <Arrow className="size-3.5" />
+                </span>
+              </button>
+            </div>
+          </div>
+
+          <div className="relative z-10 space-y-4 text-sm leading-relaxed text-white/70 md:text-[15px] lg:col-span-7">
             <p>
               A TAO Filmes é uma produtora audiovisual criada em 2017, no
               coração da Amazônia, em Belém do Pará. Ao longo de sua trajetória,
@@ -199,45 +237,14 @@ export function SobreSpotlight() {
           </div>
         </div>
 
-        <div className="relative mt-10 h-[min(92vw,520px)] lg:mt-6 lg:h-[560px]">
-          <div className="pointer-events-none absolute inset-x-[-8vw] top-1/2 z-0 -translate-y-1/2 overflow-hidden">
-            <div className="sobre-marquee-track flex w-max">
-              {[0, 1].map((copy) => (
-                <p
-                  key={copy}
-                  className={`${display.className} pr-6 text-[clamp(2.4rem,6.5vw,5.75rem)] tracking-[-0.02em] whitespace-nowrap text-white/20 uppercase`}
-                >
-                  {MARQUEE.repeat(4)}
-                </p>
-              ))}
-            </div>
-          </div>
-
-          <div className="absolute top-1/2 left-1/2 z-10 w-[min(72vw,380px)] -translate-x-1/2 -translate-y-[calc(50%+110px)]">
-            <div className="relative aspect-square overflow-hidden rounded-[1.75rem] shadow-[0_24px_60px_rgba(0,0,0,0.45)]">
-              <Image
-                src="/giovanni.png"
-                alt="Giovanni Ruggeri, fundador da TAO Filmes"
-                fill
-                unoptimized
-                className="object-cover object-[center_30%]"
-              />
-            </div>
-
-            <button
-              type="button"
-              onClick={() => setGiovanniOpen(true)}
-              className="absolute -bottom-5 left-1/2 z-20 inline-flex -translate-x-1/2 items-center gap-3 rounded-full bg-white py-2 pr-2 pl-5 text-sm font-semibold whitespace-nowrap text-black transition-transform hover:scale-[1.03]"
-            >
-              Sobre Giovanni
-              <span className="grid size-8 place-items-center rounded-full bg-black text-white">
-                <Arrow className="size-3.5" />
-              </span>
-            </button>
-          </div>
-
+        <div className="mt-6 mb-4 hidden items-center justify-between gap-8 lg:flex">
+          <p
+            className={`${display.className} min-w-0 text-[clamp(3.4rem,9vw,10.5rem)] leading-[0.78] tracking-[-0.045em] text-white/20 uppercase`}
+          >
+            TAO Filmes
+          </p>
           <div
-            className={`${display.className} pointer-events-none absolute right-0 bottom-2 z-10 hidden text-right text-[clamp(2.6rem,5.2vw,5.4rem)] leading-[0.9] tracking-[-0.03em] uppercase lg:block`}
+            className={`${display.className} shrink-0 text-right text-[clamp(2.6rem,5.2vw,5.4rem)] leading-[0.9] tracking-[-0.03em] uppercase`}
           >
             <p>Cada</p>
             <p>frame</p>

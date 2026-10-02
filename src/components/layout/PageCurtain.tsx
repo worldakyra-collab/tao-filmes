@@ -7,14 +7,22 @@ export const CURTAIN_STRIP_COUNT = 8;
 export const CURTAIN_DURATION = 1.25;
 export const CURTAIN_STAGGER = 0.14;
 export const CURTAIN_EASE = [0.65, 0, 0.35, 1] as const;
-/** Tempo preso com a tela coberta antes de abrir a próxima página */
-export const CURTAIN_HOLD_MS = 1100;
+/** Folga para a página nova pintar por baixo da cortina já fechada */
+export const CURTAIN_HOLD_MS = 80;
 
-export function curtainTotalMs() {
+export type CurtainPace = "full" | "quick";
+
+export function curtainMotion(pace: CurtainPace = "full") {
+  if (pace === "quick") return { duration: 0.42, stagger: 0.02 };
+  return { duration: CURTAIN_DURATION, stagger: CURTAIN_STAGGER };
+}
+
+export function curtainTotalMs(pace: CurtainPace = "full") {
+  const motion = curtainMotion(pace);
   return (
-    (CURTAIN_STRIP_COUNT - 1) * CURTAIN_STAGGER * 1000 +
-    CURTAIN_DURATION * 1000 +
-    60
+    (CURTAIN_STRIP_COUNT - 1) * motion.stagger * 1000 +
+    motion.duration * 1000 +
+    40
   );
 }
 
@@ -22,11 +30,17 @@ export type CurtainPhase = "hidden" | "closing" | "covered" | "opening";
 
 type PageCurtainProps = {
   phase: CurtainPhase;
+  pace?: CurtainPace;
   onClosed?: () => void;
   onOpened?: () => void;
 };
 
-export function PageCurtain({ phase, onClosed, onOpened }: PageCurtainProps) {
+export function PageCurtain({
+  phase,
+  pace = "full",
+  onClosed,
+  onOpened,
+}: PageCurtainProps) {
   useEffect(() => {
     if (phase !== "closing" || !onClosed) return;
     const timer = window.setTimeout(onClosed, curtainTotalMs());
@@ -35,9 +49,9 @@ export function PageCurtain({ phase, onClosed, onOpened }: PageCurtainProps) {
 
   useEffect(() => {
     if (phase !== "opening" || !onOpened) return;
-    const timer = window.setTimeout(onOpened, curtainTotalMs());
+    const timer = window.setTimeout(onOpened, curtainTotalMs(pace));
     return () => window.clearTimeout(timer);
-  }, [phase, onOpened]);
+  }, [phase, pace, onOpened]);
 
   if (phase === "hidden") return null;
 
@@ -49,15 +63,16 @@ export function PageCurtain({ phase, onClosed, onOpened }: PageCurtainProps) {
       aria-hidden
     >
       {Array.from({ length: CURTAIN_STRIP_COUNT }, (_, index) => {
+        const motionPace = curtainMotion(pace);
         const delay =
           phase === "closing" || phase === "opening"
-            ? index * CURTAIN_STAGGER
+            ? index * motionPace.stagger
             : 0;
         const transition =
           phase === "covered"
             ? { duration: 0 }
             : {
-                duration: CURTAIN_DURATION,
+                duration: motionPace.duration,
                 delay,
                 ease: CURTAIN_EASE,
               };

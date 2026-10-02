@@ -76,8 +76,8 @@ export function resolveMedia(
   const drive = driveId(url);
   if (drive) {
     return {
-      kind: "embed",
-      src: `https://drive.google.com/file/d/${drive}/preview`,
+      kind: "file",
+      src: "/video/reel.mp4",
     };
   }
 

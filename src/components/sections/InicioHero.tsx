@@ -1,10 +1,20 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { HOME_WORKS, type HomeWork } from "@/lib/home-works";
-import { loadPoster } from "@/lib/work-poster";
-import { MediaCover } from "@/components/ui/MediaCover";
+import { resolveMedia, youtubeId } from "@/lib/portfolio-videos";
+
+const VIMEO_STILL =
+  "https://i.vimeocdn.com/video/1775074585-5e95dc2ce5adb00bfe1db0f73d16a2da44281292859c2b892fc5785ee336e354-d_1280";
+
+function stillFor(src: string) {
+  const youtube = youtubeId(src);
+  if (youtube) return `https://i.ytimg.com/vi/${youtube}/hqdefault.jpg`;
+  if (src.includes("vimeo.com")) return VIMEO_STILL;
+  if (src.includes("drive.google.com")) return "/video/reel.jpg";
+  return "";
+}
 
 const ROW_PHASE = ["0s", "-19s", "-37s"];
 const ROW_ENTER = ["0s", "0.14s", "0.28s"];
@@ -17,47 +27,69 @@ function splitWorks(rowCount: number) {
   return rows;
 }
 
-function WorkCard({ work, clone }: { work: HomeWork; clone?: boolean }) {
-  const ref = useRef<HTMLAnchorElement>(null);
-  const [poster, setPoster] = useState("");
-  const [active, setActive] = useState(false);
+function ReelLoop({ src }: { src: string }) {
+  const ref = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    let cancelled = false;
-    void loadPoster(work.video).then((url) => {
-      if (!cancelled && url) setPoster(url);
-    });
-    return () => {
-      cancelled = true;
+    const video = ref.current;
+    if (!video) return;
+    video.muted = true;
+
+    const show = () => {
+      video.style.opacity = "1";
     };
-  }, [work.video]);
+    video.addEventListener("playing", show);
 
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setActive(entry.isIntersecting),
-      { rootMargin: "80px" },
-    );
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) {
+        video.pause();
+        return;
+      }
+      if (!video.getAttribute("src")) {
+        video.preload = "auto";
+        video.src = src;
+      }
+      void video.play().catch(() => {});
+    });
+    observer.observe(video);
+
+    return () => {
+      video.removeEventListener("playing", show);
+      observer.disconnect();
+    };
+  }, [src]);
+
+  return (
+    <video
+      ref={ref}
+      muted
+      loop
+      playsInline
+      preload="none"
+      disablePictureInPicture
+      disableRemotePlayback
+      controls={false}
+      className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-0"
+    />
+  );
+}
+
+function WorkCard({ work, clone }: { work: HomeWork; clone?: boolean }) {
+  const still = stillFor(work.video);
+  const media = resolveMedia(work.video);
 
   return (
     <Link
-      ref={ref}
       href={`/servicos/${work.slug}`}
       tabIndex={clone ? -1 : undefined}
       aria-hidden={clone || undefined}
       aria-label={clone ? undefined : `${work.title}. Ver trabalho`}
       className="group relative block h-full w-full overflow-hidden bg-neutral-950"
     >
-      {poster ? (
-        <img src={poster} alt="" className="absolute inset-0 h-full w-full object-cover" />
+      {still ? (
+        <img src={still} alt="" draggable={false} className="absolute inset-0 h-full w-full object-cover" />
       ) : null}
-      {active ? (
-        <MediaCover src={work.video} title={work.title} />
-      ) : null}
+      {media.kind === "file" ? <ReelLoop src={media.src} /> : null}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent px-4 pt-12 pb-3.5 transition-opacity duration-300 group-hover:opacity-0 group-focus-visible:opacity-0">
         <p className="truncate text-[11px] leading-none font-medium tracking-[0.16em] uppercase md:text-xs">
           {work.title}
@@ -66,8 +98,8 @@ function WorkCard({ work, clone }: { work: HomeWork; clone?: boolean }) {
           {work.category} / {work.year}
         </p>
       </div>
-      <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/45 opacity-0 backdrop-blur-md transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
-        <span className="rounded-full border border-white/55 bg-white/20 px-7 py-3.5 text-[12px] tracking-[0.22em] text-white uppercase shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-md">
+      <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
+        <span className="rounded-full border border-white/55 bg-white/15 px-7 py-3.5 text-[12px] tracking-[0.22em] text-white uppercase">
           Ver trabalho
         </span>
       </div>
@@ -86,7 +118,7 @@ function MarqueeRow({
   enter: string;
   cardClassName: string;
 }) {
-  const duration = `${Math.round(18 * works.length)}s`;
+  const duration = `${Math.round(12 * works.length)}s`;
 
   return (
     <div className="inicio-marquee-row min-h-0 flex-1" style={{ animationDelay: enter }}>

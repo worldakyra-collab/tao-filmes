@@ -62,7 +62,7 @@ export function Contact({ standalone = false }: ContactProps) {
                 <span className="text-[10px] tracking-[0.3em] uppercase text-muted block mb-2">
                   Email
                 </span>
-                <span className="text-lg md:text-xl text-white/70 group-hover:text-white transition-colors duration-500">
+                <span className="block max-w-full text-lg break-all text-white/70 transition-colors duration-500 group-hover:text-white md:text-xl">
                   {BRAND.email}
                 </span>
                 <span className="block h-px w-0 group-hover:w-full max-w-xs bg-brand-blue transition-all duration-700 mt-2" />

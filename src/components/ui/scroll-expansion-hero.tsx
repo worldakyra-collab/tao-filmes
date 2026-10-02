@@ -111,8 +111,8 @@ const ScrollExpandMedia = ({
     clamp: true,
   });
 
-  const mediaWidth = useTransform(scrollProgress, [0, 1], [viewport.w, endW]);
-  const mediaHeight = useTransform(scrollProgress, [0, 1], [viewport.h, endH]);
+  const mediaWidth = useTransform(scrollProgress, [0, 1], ["100%", `${endW}px`]);
+  const mediaHeight = useTransform(scrollProgress, [0, 1], ["100%", `${endH}px`]);
   const borderRadius = useTransform(scrollProgress, [0, 1], [0, 18]);
   const marqueeOpacity = useTransform(scrollProgress, [0.1, 0.45, 1], [0, 1, 1]);
   const scrollHintOpacity = useTransform(scrollProgress, [0, 0.1], [1, 0]);

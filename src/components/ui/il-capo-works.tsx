@@ -113,7 +113,7 @@ function WorkPanel({ work }: { work: WorkItem }) {
   const lines = titleLines(work.title);
 
   return (
-    <article className="relative h-dvh w-screen shrink-0 overflow-hidden bg-black">
+    <article className="relative h-dvh w-full min-w-full shrink-0 overflow-hidden bg-black">
       <WorkVideo src={work.video} title={work.title} />
       <div className="absolute inset-0 bg-black/25" />
 
@@ -129,7 +129,7 @@ function WorkPanel({ work }: { work: WorkItem }) {
           ))}
         </h2>
         <p
-          className={`${displaySerif.className} mt-6 text-[clamp(0.7rem,1.35vw,0.95rem)] tracking-[0.32em] text-white uppercase`}
+          className={`${displaySerif.className} mt-6 max-w-[90vw] text-balance text-[clamp(0.7rem,1.35vw,0.95rem)] tracking-[0.18em] text-white uppercase sm:tracking-[0.32em]`}
         >
           {work.subtitle}
         </p>
@@ -275,7 +275,7 @@ function StackSlide({
             ))}
           </h2>
           <motion.p
-            className={`${displaySerif.className} mt-6 text-[clamp(0.7rem,1.35vw,0.95rem)] tracking-[0.32em] text-white uppercase`}
+            className={`${displaySerif.className} mt-6 max-w-[90vw] text-balance text-[clamp(0.7rem,1.35vw,0.95rem)] tracking-[0.18em] text-white uppercase sm:tracking-[0.32em]`}
             style={{ y: subtitleY, opacity: subtitleOpacity }}
           >
             {work.subtitle}

@@ -40,7 +40,7 @@ export function Footer() {
               >
                 {BRAND.phoneDisplay}
               </a>
-              <a href={`mailto:${BRAND.email}`} className={linkClass}>
+              <a href={`mailto:${BRAND.email}`} className={`${linkClass} break-all`}>
                 {BRAND.email}
               </a>
             </div>
@@ -83,7 +83,7 @@ export function Footer() {
         </div>
 
         <p
-          className={`${display.className} mt-8 text-[clamp(3.4rem,12.4vw,10.5rem)] leading-[0.78] tracking-[-0.045em] whitespace-nowrap uppercase md:mt-10`}
+          className={`${display.className} mt-8 max-w-full text-[clamp(1.85rem,12.4vw,10.5rem)] leading-[0.78] tracking-[-0.045em] whitespace-nowrap uppercase md:mt-10`}
         >
           TAO Filmes
         </p>

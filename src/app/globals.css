@@ -115,10 +115,10 @@ html:has(#home-showcase) footer {
 
 @keyframes inicio-marquee-in {
   from {
-    transform: translate3d(16%, 0, 0);
+    opacity: 0;
   }
   to {
-    transform: translate3d(0, 0, 0);
+    opacity: 1;
   }
 }
 
@@ -138,11 +138,15 @@ html:has(#home-showcase) footer {
 
 .inicio-marquee-track {
   animation: inicio-marquee 56s linear infinite;
+  backface-visibility: hidden;
   will-change: transform;
 }
 
-.inicio-marquee-row:hover .inicio-marquee-track {
-  animation-play-state: paused;
+.inicio-marquee-track video::-webkit-media-controls,
+.inicio-marquee-track video::-webkit-media-controls-enclosure,
+.inicio-marquee-track video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+  -webkit-appearance: none;
 }
 
 .inicio-collage-stage {
