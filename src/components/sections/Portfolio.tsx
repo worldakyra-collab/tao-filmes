@@ -92,9 +92,9 @@ function ProjectContent({ project }: { project: Project }) {
         </p>
       </TextLine>
 
-      <TextLine delay={0.36} className="mt-10">
+      <div className="mt-10">
         <ProjectCta href={`/portfolio/${project.slug}`} />
-      </TextLine>
+      </div>
     </div>
   );
 }
