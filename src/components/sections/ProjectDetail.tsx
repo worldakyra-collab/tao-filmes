@@ -18,7 +18,7 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
           <div className="lg:col-span-4">
             <Reveal>
               <Link
-                href="/portfolio"
+                href="/inicio"
                 className="inline-flex items-center gap-4 text-[10px] tracking-[0.3em] uppercase text-white/40 hover:text-white transition-colors duration-500 group"
               >
                 <svg
@@ -80,12 +80,6 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
           </div>
 
           <div className="lg:col-span-7 lg:col-start-6">
-            <Reveal delay={0.15}>
-              <p className="text-base md:text-lg text-white/50 leading-relaxed md:leading-loose max-w-2xl">
-                {project.description}
-              </p>
-            </Reveal>
-
             {project.video ? (
               <Reveal delay={0.3} className="mt-16 md:mt-24">
                 <WorkVideo src={project.video} />

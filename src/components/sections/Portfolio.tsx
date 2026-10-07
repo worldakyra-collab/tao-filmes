@@ -92,13 +92,7 @@ function ProjectContent({ project }: { project: Project }) {
         </p>
       </TextLine>
 
-      <TextLine delay={0.36} className="mt-6">
-        <p className="max-w-md text-sm leading-relaxed text-foreground/55 md:text-[15px]">
-          {project.description}
-        </p>
-      </TextLine>
-
-      <TextLine delay={0.48} className="mt-10">
+      <TextLine delay={0.36} className="mt-10">
         <ProjectCta href={`/portfolio/${project.slug}`} />
       </TextLine>
     </div>
