@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { resolveMedia, youtubeEmbed, youtubeId } from "@/lib/portfolio-videos";
 import { CoverEmbedStyle } from "@/components/ui/cover-embed-style";
 
@@ -62,45 +62,29 @@ function EmbedCover({
   className: string;
   youtube?: boolean;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLIFrameElement>(null);
-  const [on, setOn] = useState(false);
 
   useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setOn(entry.isIntersecting),
-      { threshold: 0.6 },
-    );
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (!on) return;
-    const frame = frameRef.current;
     if (!youtube) return;
+    const frame = frameRef.current;
     const listen = () => {
       frame?.contentWindow?.postMessage(JSON.stringify({ event: "listening" }), "*");
     };
     frame?.addEventListener("load", listen);
     return () => frame?.removeEventListener("load", listen);
-  }, [on, youtube]);
+  }, [youtube]);
 
   return (
-    <div ref={ref} className={`cover-embed ${className}`}>
+    <div className={`cover-embed ${className}`}>
       <CoverEmbedStyle />
-      {on ? (
-        <iframe
-          ref={frameRef}
-          src={src}
-          title={title || "Vídeo"}
-          className="pointer-events-none border-0"
-          allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
-          referrerPolicy="strict-origin-when-cross-origin"
-        />
-      ) : null}
+      <iframe
+        ref={frameRef}
+        src={src}
+        title={title || "Vídeo"}
+        className="pointer-events-none border-0"
+        allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+        referrerPolicy="strict-origin-when-cross-origin"
+      />
       <div className="absolute inset-0 z-10" />
     </div>
   );
@@ -116,26 +100,10 @@ function FileCover({
   className: string;
 }) {
   const ref = useRef<HTMLVideoElement>(null);
-  const [on, setOn] = useState(false);
 
   useEffect(() => {
     const video = ref.current;
     if (!video) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setOn(entry.isIntersecting),
-      { threshold: 0.15 },
-    );
-    observer.observe(video);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const video = ref.current;
-    if (!video) return;
-    if (!on) {
-      video.pause();
-      return;
-    }
 
     video.muted = true;
     video.preload = "auto";
@@ -147,7 +115,7 @@ function FileCover({
     video.addEventListener("loadeddata", start);
     video.load();
     return () => video.removeEventListener("loadeddata", start);
-  }, [on, src]);
+  }, [src]);
 
   return (
     <div className={className}>
@@ -156,7 +124,8 @@ function FileCover({
         muted
         loop
         playsInline
-        preload="none"
+        autoPlay
+        preload="auto"
         aria-label={title}
         disablePictureInPicture
         disableRemotePlayback

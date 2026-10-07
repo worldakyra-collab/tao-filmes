@@ -106,8 +106,8 @@ const ScrollExpandMedia = ({
     return () => window.removeEventListener("resize", updateSize);
   }, []);
 
-  const endW = isMobile ? viewport.w : 320;
-  const endH = isMobile ? viewport.h : 500;
+  const endW = isMobile ? Math.min(240, viewport.w * 0.62) : 320;
+  const endH = isMobile ? Math.min(300, viewport.h * 0.36) : 500;
   const shrinkDistance = Math.max(viewport.h * shrinkViewportRatio, 1);
 
   const scrollProgress = useTransform(scrollY, [0, shrinkDistance], [0, 1], {
@@ -116,7 +116,7 @@ const ScrollExpandMedia = ({
 
   const mediaWidth = useTransform(scrollProgress, [0, 1], [viewport.w, endW]);
   const mediaHeight = useTransform(scrollProgress, [0, 1], [viewport.h, endH]);
-  const borderRadius = useTransform(scrollProgress, [0, 1], [0, isMobile ? 0 : 18]);
+  const borderRadius = useTransform(scrollProgress, [0, 1], [0, 18]);
   const marqueeOpacity = useTransform(scrollProgress, [0.1, 0.45, 1], [0, 1, 1]);
   const scrollHintOpacity = useTransform(scrollProgress, [0, 0.1], [1, 0]);
   const mediaRadius = useMotionTemplate`${borderRadius}px`;

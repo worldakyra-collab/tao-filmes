@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Anton } from "next/font/google";
 import { HOME_WORKS, type HomeWork } from "@/lib/home-works";
@@ -92,25 +92,12 @@ function CardMedia({
   video?: boolean;
   className?: string;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
   const poster = usePoster(work.video);
-  const [active, setActive] = useState(false);
-
-  useEffect(() => {
-    const node = ref.current;
-    if (!node || !video) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setActive(entry.isIntersecting),
-      { rootMargin: "80px" },
-    );
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, [video]);
 
   return (
-    <div ref={ref} className={`relative overflow-hidden bg-neutral-950 ${className}`}>
+    <div className={`relative overflow-hidden bg-neutral-950 ${className}`}>
       {video ? (
-        active ? <MediaCover src={work.video} /> : null
+        <MediaCover src={work.video} />
       ) : poster ? (
         <img src={poster} alt="" draggable={false} className="absolute inset-0 h-full w-full object-cover" />
       ) : null}

@@ -3,7 +3,6 @@
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { HOME_WORKS, type HomeWork } from "@/lib/home-works";
-import { claimPlayback, onPlaybackSlot, releasePlayback } from "@/lib/playback-budget";
 import { resolveMedia, youtubeId } from "@/lib/portfolio-videos";
 
 const VIMEO_STILL =
@@ -35,52 +34,16 @@ function ReelLoop({ src }: { src: string }) {
     const video = ref.current;
     if (!video) return;
     video.muted = true;
-    let visible = false;
-
-    const show = () => {
-      video.style.opacity = "1";
-    };
-    const stopVideo = () => {
-      video.pause();
-      releasePlayback(video);
-      if (video.currentSrc) {
-        video.removeAttribute("src");
-        video.load();
-        video.style.opacity = "0";
-      }
-    };
-    const sync = () => {
-      if (!visible) {
-        stopVideo();
-        return;
-      }
-      if (!claimPlayback(video)) {
-        video.pause();
-        return;
-      }
-      if (!video.currentSrc) {
-        video.preload = "auto";
-        video.src = src;
-      }
+    video.preload = "auto";
+    video.src = src;
+    video.style.opacity = "1";
+    const start = () => {
+      video.muted = true;
       void video.play().catch(() => {});
     };
-
-    video.addEventListener("playing", show);
-    const stop = onPlaybackSlot(sync);
-    const observer = new IntersectionObserver(([entry]) => {
-      visible = entry.isIntersecting && entry.intersectionRatio >= 0.35;
-      sync();
-    }, { threshold: [0, 0.35, 0.75] });
-    observer.observe(video);
-
-    return () => {
-      visible = false;
-      releasePlayback(video);
-      stop();
-      video.removeEventListener("playing", show);
-      observer.disconnect();
-      video.pause();
-    };
+    video.addEventListener("loadeddata", start);
+    video.load();
+    return () => video.removeEventListener("loadeddata", start);
   }, [src]);
 
   return (

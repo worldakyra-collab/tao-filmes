@@ -7,13 +7,6 @@ import { Reveal } from "@/components/ui/Reveal";
 
 const PAGES = [
   {
-    href: "/portfolio",
-    title: "Portfólio",
-    number: "01",
-    image:
-      "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1200&q=80",
-  },
-  {
     href: "/servicos",
     title: "Serviços",
     number: "02",

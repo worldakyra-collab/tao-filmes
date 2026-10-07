@@ -90,12 +90,6 @@ export function HomeShowcase() {
             >
               Instagram
             </a>
-            <Link
-              href="/portfolio"
-              className="text-[10px] uppercase tracking-[0.26em] text-white underline decoration-white/80 underline-offset-4"
-            >
-              Cinematografia
-            </Link>
           </div>
 
           <div className="absolute left-1/2 hidden -translate-x-1/2 items-end gap-1.5 sm:flex">
