@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { Anton } from "next/font/google";
 import { BRAND, SITE_MENU_ITEMS } from "@/lib/constants";
 
@@ -11,12 +10,6 @@ const linkClass =
   "block text-[13px] leading-6 text-[#0A0A0A]/80 transition-opacity hover:opacity-60 md:text-sm";
 
 export function Footer() {
-  const pathname = usePathname();
-
-  if (pathname === "/") {
-    return null;
-  }
-
   return (
     <footer className="bg-black px-3 py-4 md:px-5 md:py-6">
       <div className="rounded-[1.6rem] bg-[#F5F5F0] px-6 pt-8 pb-5 text-[#0A0A0A] md:rounded-[2rem] md:px-10 md:pt-10 md:pb-6">
