@@ -1,10 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
 import Link from "next/link";
 import { type Project } from "@/lib/data";
 import { Reveal } from "@/components/ui/Reveal";
+import { WorkVideo } from "@/components/ui/WorkVideo";
 
 type ProjectDetailProps = {
   project: Project;
@@ -13,59 +13,8 @@ type ProjectDetailProps = {
 export function ProjectDetail({ project }: ProjectDetailProps) {
   return (
     <article>
-      <section className="relative h-[70vh] md:h-[80vh] w-full overflow-hidden">
-        {project.video ? (
-          <>
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="absolute inset-0 h-full w-full object-cover"
-              poster={project.image}
-            >
-              <source src={project.video} type="video/mp4" />
-            </video>
-            <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent" />
-          </>
-        ) : (
-          <>
-            <Image
-              src={project.image}
-              alt={project.title}
-              fill
-              priority
-              className="object-cover"
-              sizes="100vw"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent" />
-          </>
-        )}
-
-        <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12 lg:p-16">
-          <div className="mx-auto max-w-[1800px]">
-            <motion.p
-              className="text-[10px] tracking-[0.3em] uppercase text-white/40 mb-4"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-            >
-              {project.category} — {project.year}
-            </motion.p>
-            <motion.h1
-              className="font-serif text-5xl md:text-7xl lg:text-8xl tracking-tight"
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            >
-              {project.title}
-            </motion.h1>
-          </div>
-        </div>
-      </section>
-
-      <section className="px-6 md:px-12 py-24 md:py-32">
-        <div className="mx-auto max-w-[1800px] grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
+      <section className="px-6 pt-28 pb-24 md:px-12 md:pt-36 md:pb-32">
+        <div className="mx-auto grid max-w-[1800px] grid-cols-1 gap-16 lg:grid-cols-12 lg:gap-24">
           <div className="lg:col-span-4">
             <Reveal>
               <Link
@@ -83,9 +32,28 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
                 >
                   <path d="M13 8H3M3 8L7 4M3 8L7 12" />
                 </svg>
-                Voltar ao portfólio
+                Voltar
               </Link>
             </Reveal>
+
+            <div className="mt-10">
+              <motion.p
+                className="mb-4 text-[10px] tracking-[0.3em] text-white/40 uppercase"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+              >
+                {project.category} — {project.year}
+              </motion.p>
+              <motion.h1
+                className="font-serif text-5xl tracking-tight md:text-6xl lg:text-7xl"
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              >
+                {project.title}
+              </motion.h1>
+            </div>
 
             <Reveal delay={0.2} className="mt-16 space-y-8">
               {project.client && (
@@ -118,17 +86,11 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
               </p>
             </Reveal>
 
-            <Reveal delay={0.3} className="mt-16 md:mt-24">
-              <div className="relative aspect-[16/9] overflow-hidden">
-                <Image
-                  src={project.image}
-                  alt={project.title}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 60vw"
-                />
-              </div>
-            </Reveal>
+            {project.video ? (
+              <Reveal delay={0.3} className="mt-16 md:mt-24">
+                <WorkVideo src={project.video} />
+              </Reveal>
+            ) : null}
           </div>
         </div>
       </section>

@@ -2,7 +2,6 @@
 
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import { BRAND } from "@/lib/constants";
 import { HERO_VIDEO } from "@/lib/data";
 import { ScrollIndicator } from "@/components/ui/ScrollIndicator";
 
@@ -47,12 +46,13 @@ export function Hero() {
         </motion.p>
 
         <motion.h1
-          className="font-serif text-5xl md:text-7xl lg:text-8xl tracking-tight text-balance max-w-4xl"
+          className="max-w-4xl font-serif text-5xl leading-[0.9] tracking-tight uppercase md:text-7xl lg:text-8xl"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, delay: 1, ease: [0.22, 1, 0.36, 1] }}
         >
-          {BRAND.tagline}
+          <span className="block">Tao</span>
+          <span className="block">Filmes</span>
         </motion.h1>
 
         <motion.div

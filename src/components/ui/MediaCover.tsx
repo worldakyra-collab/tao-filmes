@@ -1,22 +1,23 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { resolveMedia, youtubeId } from "@/lib/portfolio-videos";
+import { resolveMedia, youtubeEmbed, youtubeId } from "@/lib/portfolio-videos";
 import { CoverEmbedStyle } from "@/components/ui/cover-embed-style";
-import { YoutubeFrame } from "@/components/ui/YoutubeFrame";
 
 export function MediaCover({
   src,
   title,
+  poster,
   className = "absolute inset-0 h-full w-full",
 }: {
   src: string;
   title?: string;
+  poster?: string;
   className?: string;
 }) {
   const youtube = youtubeId(src);
   if (youtube) {
-    return <YoutubeFrame videoId={youtube} title={title} className={className} />;
+    return <YoutubeCover id={youtube} title={title} poster={poster} className={className} />;
   }
 
   const media = resolveMedia(src);
@@ -28,16 +29,41 @@ export function MediaCover({
   return <FileCover src={media.src} title={title} className={className} />;
 }
 
+function YoutubeCover({
+  id,
+  title,
+  className,
+}: {
+  id: string;
+  title?: string;
+  poster?: string;
+  className: string;
+}) {
+  return (
+    <div className={`${className} overflow-hidden`}>
+      <iframe
+        src={youtubeEmbed(id, { mute: true, loop: true })}
+        title={title || "Vídeo"}
+        className="pointer-events-none absolute top-1/2 left-1/2 h-[130%] w-[130%] -translate-x-1/2 -translate-y-1/2 border-0"
+        allow="autoplay; encrypted-media"
+      />
+    </div>
+  );
+}
+
 function EmbedCover({
   src,
   title,
   className,
+  youtube = false,
 }: {
   src: string;
   title?: string;
   className: string;
+  youtube?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const frameRef = useRef<HTMLIFrameElement>(null);
   const [on, setOn] = useState(false);
 
   useEffect(() => {
@@ -51,11 +77,23 @@ function EmbedCover({
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    if (!on) return;
+    const frame = frameRef.current;
+    if (!youtube) return;
+    const listen = () => {
+      frame?.contentWindow?.postMessage(JSON.stringify({ event: "listening" }), "*");
+    };
+    frame?.addEventListener("load", listen);
+    return () => frame?.removeEventListener("load", listen);
+  }, [on, youtube]);
+
   return (
     <div ref={ref} className={`cover-embed ${className}`}>
       <CoverEmbedStyle />
       {on ? (
         <iframe
+          ref={frameRef}
           src={src}
           title={title || "Vídeo"}
           className="pointer-events-none border-0"
@@ -63,6 +101,7 @@ function EmbedCover({
           referrerPolicy="strict-origin-when-cross-origin"
         />
       ) : null}
+      <div className="absolute inset-0 z-10" />
     </div>
   );
 }
@@ -84,7 +123,7 @@ function FileCover({
     if (!video) return;
     const observer = new IntersectionObserver(
       ([entry]) => setOn(entry.isIntersecting),
-      { threshold: 0.6 },
+      { threshold: 0.15 },
     );
     observer.observe(video);
     return () => observer.disconnect();
@@ -95,8 +134,6 @@ function FileCover({
     if (!video) return;
     if (!on) {
       video.pause();
-      video.removeAttribute("src");
-      video.load();
       return;
     }
 
@@ -113,17 +150,19 @@ function FileCover({
   }, [on, src]);
 
   return (
-    <video
-      ref={ref}
-      muted
-      loop
-      playsInline
-      preload="none"
-      aria-label={title}
-      disablePictureInPicture
-      disableRemotePlayback
-      controls={false}
-      className={`${className} object-cover`}
-    />
+    <div className={className}>
+      <video
+        ref={ref}
+        muted
+        loop
+        playsInline
+        preload="none"
+        aria-label={title}
+        disablePictureInPicture
+        disableRemotePlayback
+        controls={false}
+        className="pointer-events-none h-full w-full object-cover"
+      />
+    </div>
   );
 }

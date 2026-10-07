@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
   motion,
@@ -10,8 +10,8 @@ import {
   type MotionValue,
 } from "framer-motion";
 import { Archivo_Black, Cormorant_Garamond } from "next/font/google";
-import { PORTFOLIO_VIDEOS } from "@/lib/portfolio-videos";
 import { MediaCover } from "@/components/ui/MediaCover";
+import { PORTFOLIO_VIDEOS } from "@/lib/portfolio-videos";
 
 const displaySans = Archivo_Black({
   weight: "400",
@@ -36,6 +36,8 @@ export type WorkItem = {
   video: string;
 };
 
+const LOCAL_VIDEOS = PORTFOLIO_VIDEOS;
+
 const WORKS: WorkItem[] = [
   {
     id: "01",
@@ -44,7 +46,7 @@ const WORKS: WorkItem[] = [
     subtitle: "Iconic Shoe Masterpiece",
     client: "Maison Margiela",
     number: "01",
-    video: PORTFOLIO_VIDEOS[0],
+    video: LOCAL_VIDEOS[0],
   },
   {
     id: "02",
@@ -53,7 +55,7 @@ const WORKS: WorkItem[] = [
     subtitle: "Junior Project",
     client: "Juventus — Artissima",
     number: "02",
-    video: PORTFOLIO_VIDEOS[1],
+    video: LOCAL_VIDEOS[1],
   },
   {
     id: "03",
@@ -62,7 +64,7 @@ const WORKS: WorkItem[] = [
     subtitle: "Le Pavillon Des Folies",
     client: "Valentino",
     number: "03",
-    video: PORTFOLIO_VIDEOS[2],
+    video: LOCAL_VIDEOS[2],
   },
   {
     id: "04",
@@ -71,7 +73,7 @@ const WORKS: WorkItem[] = [
     subtitle: "Bren Heritage Film",
     client: "Buccellati",
     number: "04",
-    video: PORTFOLIO_VIDEOS[3],
+    video: LOCAL_VIDEOS[0],
   },
   {
     id: "05",
@@ -80,7 +82,7 @@ const WORKS: WorkItem[] = [
     subtitle: "A Defining Fashion Film",
     client: "Gucci",
     number: "05",
-    video: PORTFOLIO_VIDEOS[4],
+    video: LOCAL_VIDEOS[1],
   },
 ];
 
@@ -151,11 +153,29 @@ export function IlCapoWorksRail() {
     offset: ["start start", "end end"],
   });
 
-  const x = useTransform(
-    scrollYProgress,
-    [0, 1],
-    ["0%", `-${(WORKS.length - 1) * 100}%`],
-  );
+  const holdVh = 32;
+  const moveVh = 150;
+  const railVh = WORKS.length * holdVh + (WORKS.length - 1) * moveVh;
+
+  const railMap = useMemo(() => {
+    const input = [0];
+    const output = ["0vw"];
+    let cursor = 0;
+    const total = WORKS.length * holdVh + (WORKS.length - 1) * moveVh;
+    WORKS.forEach((_, index) => {
+      cursor += holdVh;
+      input.push(cursor / total);
+      output.push(`-${index * 100}vw`);
+      if (index < WORKS.length - 1) {
+        cursor += moveVh;
+        input.push(cursor / total);
+        output.push(`-${(index + 1) * 100}vw`);
+      }
+    });
+    return { input, output };
+  }, []);
+
+  const x = useTransform(scrollYProgress, railMap.input, railMap.output);
 
   useEffect(() => {
     setMounted(true);
@@ -166,7 +186,7 @@ export function IlCapoWorksRail() {
       ref={containerRef}
       aria-label="Trabalhos"
       className={`${displaySans.variable} ${displaySerif.variable} relative z-10`}
-      style={{ height: `${WORKS.length * 100}vh` }}
+      style={{ height: `${railVh}vh` }}
     >
       <div className="sticky top-0 h-dvh overflow-hidden bg-black">
         <motion.div
@@ -179,38 +199,6 @@ export function IlCapoWorksRail() {
         </motion.div>
       </div>
     </section>
-  );
-}
-
-function TitleLine({
-  text,
-  progress,
-  delay,
-}: {
-  text: string;
-  progress: MotionValue<number>;
-  delay: number;
-}) {
-  const y = useTransform(
-    progress,
-    [0, 0.35 + delay, 0.75 + delay, 1],
-    ["110%", "110%", "0%", "0%"],
-  );
-  const opacity = useTransform(
-    progress,
-    [0, 0.4 + delay, 0.7 + delay, 1],
-    [0, 0, 1, 1],
-  );
-
-  return (
-    <div className="overflow-hidden leading-[0.92]">
-      <motion.span
-        className={`${displaySerif.className} block text-[clamp(3rem,9vw,7rem)] font-medium tracking-[0.02em] text-white uppercase`}
-        style={{ y, opacity }}
-      >
-        {text}
-      </motion.span>
-    </div>
   );
 }
 
@@ -256,12 +244,10 @@ function StackSlide({
     [0, 0, 1, 1],
   );
 
-  const lines = titleLines(work.title);
-
   return (
     <article
       ref={ref}
-      className="relative h-[120vh]"
+      className="relative h-[132vh]"
       style={{ zIndex: index + 1 }}
     >
       <div className="sticky top-0 flex h-dvh items-center justify-center overflow-hidden bg-black">
@@ -276,30 +262,18 @@ function StackSlide({
           />
         </motion.div>
 
-        <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center px-6 text-center">
-          <h2 className="flex flex-col items-center">
-            {lines.map((line, i) => (
-              <TitleLine
-                key={`${work.id}-${line}`}
-                text={line}
-                progress={scrollYProgress}
-                delay={i * 0.06}
-              />
-            ))}
-          </h2>
-          <motion.p
-            className={`${displaySerif.className} mt-6 max-w-[90vw] text-balance text-[clamp(0.7rem,1.35vw,0.95rem)] tracking-[0.18em] text-white uppercase sm:tracking-[0.32em]`}
-            style={{ y: subtitleY, opacity: subtitleOpacity }}
-          >
-            {work.subtitle}
-          </motion.p>
-          <motion.div
-            className="pointer-events-auto"
-            style={{ y: subtitleY, opacity: subtitleOpacity }}
-          >
-            <VerTrabalhoButton slug={work.slug} />
-          </motion.div>
-        </div>
+        <motion.p
+          className={`${displaySerif.className} absolute top-24 left-6 z-10 max-w-[40vw] text-[clamp(0.7rem,1.35vw,0.95rem)] tracking-[0.18em] text-white uppercase sm:top-28 sm:left-10 sm:tracking-[0.32em]`}
+          style={{ y: subtitleY, opacity: subtitleOpacity }}
+        >
+          {work.subtitle}
+        </motion.p>
+        <motion.div
+          className="pointer-events-auto absolute right-6 bottom-6 z-10 sm:right-10 sm:bottom-10 [&_a]:mt-0"
+          style={{ y: subtitleY, opacity: subtitleOpacity }}
+        >
+          <VerTrabalhoButton slug={work.slug} />
+        </motion.div>
       </div>
     </article>
   );
@@ -314,7 +288,7 @@ export function IlCapoWorksStack() {
       aria-label="Trabalhos em cards"
       className={`${displaySans.variable} ${displaySerif.variable} relative z-10 bg-black`}
     >
-      {WORKS.map((work, index) => (
+      {WORKS.slice(0, 4).map((work, index) => (
         <StackSlide key={`stack-${work.id}`} work={work} index={index} />
       ))}
     </section>

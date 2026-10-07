@@ -10,7 +10,7 @@ import { lockBodyScroll } from "@/lib/scroll-lock";
 
 const display = Anton({ weight: "400", subsets: ["latin"] });
 
-const MARQUEE = "O QUE FICA DEPOIS DO CORTE   ";
+const MARQUEE = "CONHEÇA A TAO FILMES   ";
 
 const LINKS = [
   { label: "Documentário", href: "/teste-2" },
@@ -145,7 +145,13 @@ export function SobreSpotlight() {
     <section className="relative overflow-hidden bg-black px-6 pt-28 pb-16 text-white md:px-12 md:pt-36 md:pb-24">
       <div className="mx-auto max-w-[1440px]">
         <div className="relative grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-12">
-          <div className="pointer-events-none absolute inset-x-[-8vw] top-[18rem] z-0 -translate-y-1/2 overflow-hidden lg:top-[58%]">
+          <div
+            className="pointer-events-none absolute inset-x-[-8vw] top-[18rem] z-0 -translate-y-1/2 overflow-hidden lg:top-[58%]"
+            style={{
+              maskImage: "linear-gradient(90deg, #000 0%, #000 32%, transparent 50%)",
+              WebkitMaskImage: "linear-gradient(90deg, #000 0%, #000 32%, transparent 50%)",
+            }}
+          >
             <div className="sobre-marquee-track flex w-max">
               {[0, 1].map((copy) => (
                 <p
@@ -170,7 +176,8 @@ export function SobreSpotlight() {
               <img
                 src="/camaleao.svg"
                 alt=""
-                className="h-16 w-auto shrink-0 md:h-24"
+                draggable={false}
+                className="h-16 w-auto shrink-0 mix-blend-difference select-none md:h-24"
               />
             </div>
 
@@ -237,9 +244,9 @@ export function SobreSpotlight() {
           </div>
         </div>
 
-        <div className="mt-6 mb-4 hidden items-center justify-between gap-8 lg:flex">
+        <div className="@container mt-6 mb-4 hidden items-end justify-between gap-16 select-none lg:flex">
           <p
-            className={`${display.className} min-w-0 text-[clamp(3.4rem,9vw,10.5rem)] leading-[0.78] tracking-[-0.045em] text-white/20 uppercase`}
+            className={`${display.className} min-w-0 text-[clamp(6rem,18cqw,16rem)] leading-[0.8] tracking-[-0.01em] whitespace-nowrap text-white/20 uppercase`}
           >
             TAO Filmes
           </p>
@@ -254,7 +261,7 @@ export function SobreSpotlight() {
         </div>
 
         <div
-          className={`${display.className} mt-8 text-right text-[clamp(2.6rem,14vw,4rem)] leading-[0.9] tracking-[-0.03em] uppercase lg:hidden`}
+          className={`${display.className} mt-8 text-right text-[clamp(2.6rem,14vw,4rem)] leading-[0.9] tracking-[-0.03em] uppercase select-none lg:hidden`}
         >
           <p>Cada</p>
           <p>frame</p>

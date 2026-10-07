@@ -1,3 +1,5 @@
+import { PORTFOLIO_VIDEOS } from "@/lib/portfolio-videos";
+
 export type Project = {
   id: string;
   slug: string;
@@ -44,7 +46,7 @@ export const PROJECTS: Project[] = [
     client: "Marca Nacional",
     image:
       "https://images.unsplash.com/photo-1574267432553-4b4628081c31?w=1600&q=80",
-    video: SITE_VIDEO_1,
+    video: SITE_VIDEO_2,
     layout: "left",
     description:
       "Um filme que explora os limites entre o real e o imaginado. Horizonte captura a essência da transformação através de narrativa visual cinematográfica, onde cada frame constrói uma jornada emocional.",
@@ -58,7 +60,7 @@ export const PROJECTS: Project[] = [
     client: "Artista Independente",
     image:
       "https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=1600&q=80",
-    video: SITE_VIDEO_2,
+    video: PORTFOLIO_VIDEOS[1],
     layout: "full",
     description:
       "Clipe musical com linguagem visual ousada e atmosfera densa. Eclipse utiliza luz e sombra como elementos narrativos, criando uma experiência sensorial que acompanha cada nota da composição.",
@@ -72,7 +74,7 @@ export const PROJECTS: Project[] = [
     client: "Plataforma Digital",
     image:
       "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1600&q=80",
-    video: SITE_VIDEO_1,
+    video: PORTFOLIO_VIDEOS[2],
     layout: "right",
     description:
       "Série de conteúdos digitais desenvolvida para múltiplas plataformas. Resonância mantém identidade visual coesa enquanto adapta a narrativa para cada formato e audiência.",
@@ -86,7 +88,7 @@ export const PROJECTS: Project[] = [
     client: "Festival de Cinema",
     image:
       "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=1600&q=80",
-    video: SITE_VIDEO_2,
+    video: PORTFOLIO_VIDEOS[3],
     layout: "offset",
     description:
       "Curta-metragem cinematográfico que investiga temas de mudança e identidade. Metamorfose foi produzido com abordagem autoral, priorizando composição visual e ritmo narrativo.",
@@ -100,7 +102,7 @@ export const PROJECTS: Project[] = [
     client: "Instituição Cultural",
     image:
       "https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=1600&q=80",
-    video: SITE_VIDEO_1,
+    video: PORTFOLIO_VIDEOS[4],
     layout: "left",
     description:
       "Documentário visual em formato experimental. Fragmentos entrelaça memória, arquitetura e movimento urbano em uma montagem que questiona a linearidade do tempo.",

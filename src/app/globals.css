@@ -15,7 +15,7 @@
   --color-brand-blue: var(--brand-blue);
   --color-muted: var(--muted);
   --font-sans: var(--font-dm-sans);
-  --font-serif: var(--font-anton);
+  --font-serif: var(--font-archivo);
 }
 
 * {
@@ -34,7 +34,14 @@ video::-webkit-media-controls-picture-in-picture-button {
 }
 
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
+  overscroll-behavior: none;
+}
+
+img[src*="camaleao.svg"] {
+  user-select: none;
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
 }
 
 body {
@@ -42,6 +49,7 @@ body {
   color: var(--foreground);
   font-family: var(--font-dm-sans), system-ui, sans-serif;
   overflow-x: hidden;
+  overscroll-behavior: none;
 }
 
 html:has(#home-showcase) {
@@ -74,7 +82,7 @@ html:has(#home-showcase) footer {
 }
 
 .font-serif {
-  font-family: var(--font-anton), Impact, sans-serif;
+  font-family: var(--font-archivo), Impact, sans-serif;
 }
 
 .font-watermark {
@@ -146,6 +154,16 @@ html:has(#home-showcase) footer {
   min-height: 100% !important;
   max-width: none !important;
   border: 0;
+  transform: translate(-50%, -50%) !important;
+}
+
+.cover-embed.cover-still iframe {
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
   transform: translate(-50%, -50%) !important;
 }
 

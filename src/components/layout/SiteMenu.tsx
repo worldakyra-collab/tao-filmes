@@ -87,10 +87,10 @@ function MenuLink({
     <motion.li
       initial={{ opacity: 0, y: 10 }}
       animate={isOpen ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-      exit={{ opacity: 0, y: 6 }}
+      exit={{ opacity: 0, transition: { duration: 0 } }}
       transition={{
         duration: 0.45,
-        delay: isOpen ? index * ITEM_STAGGER + 0.08 : 0,
+        delay: isOpen ? 0.32 + index * ITEM_STAGGER : 0,
         ease: EASE,
       }}
     >
@@ -133,7 +133,7 @@ export function SiteMenu({
             className="fixed inset-0 z-[55] bg-black/55"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            exit={{ opacity: 0, transition: { duration: 0 } }}
             transition={{ duration: 0.35, ease: EASE }}
             onClick={onClose}
             aria-hidden
@@ -142,12 +142,18 @@ export function SiteMenu({
           <motion.div
             role="dialog"
             aria-label="Menu"
-            className="fixed top-4 right-4 z-[56] w-[min(88vw,340px)] rounded-[1.75rem] bg-[#0A0A0A] px-6 pt-5 pb-6 text-[#F5F5F0] shadow-[0_24px_70px_rgba(0,0,0,0.55)] ring-1 ring-white/12 md:top-5 md:right-8"
-            initial={{ opacity: 0, y: -12, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -8, scale: 0.98 }}
-            transition={{ duration: 0.4, ease: EASE }}
+            className="fixed top-5 right-6 z-[56] w-[min(88vw,340px)] origin-top-right overflow-hidden rounded-[1.75rem] bg-[#0A0A0A] px-6 pt-5 pb-6 text-[#F5F5F0] shadow-[0_24px_70px_rgba(0,0,0,0.55)] ring-1 ring-white/12 md:top-6 md:right-12"
+            initial={{ scale: 0, opacity: 1 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ opacity: 0, scale: 0, transition: { duration: 0 } }}
+            transition={{ duration: 0.45, ease: EASE }}
           >
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: 0 } }}
+              transition={{ duration: 0.28, delay: 0.26, ease: EASE }}
+            >
             <div className="mb-5 flex items-center justify-between">
               <p className="text-[11px] tracking-[0.28em] text-white/45 uppercase">
                 Menu
@@ -185,6 +191,7 @@ export function SiteMenu({
                 ))}
               </ul>
             </nav>
+            </motion.div>
           </motion.div>
         </>
       )}

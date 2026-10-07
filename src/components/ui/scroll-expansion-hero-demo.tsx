@@ -2,16 +2,11 @@
 
 import { useEffect } from "react";
 import ScrollExpandMedia from "@/components/ui/scroll-expansion-hero";
-import {
-  IlCapoWorksRail,
-  IlCapoWorksStack,
-} from "@/components/ui/il-capo-works";
+import { IlCapoWorksStack } from "@/components/ui/il-capo-works";
 import { AsymmetricGallery } from "@/components/ui/asymmetric-gallery";
 
-import { PORTFOLIO_VIDEOS } from "@/lib/portfolio-videos";
-
 const media = {
-  src: PORTFOLIO_VIDEOS[0],
+  src: "/video/esse1.mp4",
   poster:
     "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1280&q=80",
 };
@@ -56,10 +51,6 @@ export default function TesteScrollExpansionDemo({
         className="pointer-events-none relative z-0"
         style={{ height: `${SHRINK_RATIO * 100}vh` }}
       />
-
-      <div className="relative z-10">
-        <IlCapoWorksRail />
-      </div>
 
       {showStackCards ? (
         <div className="relative z-20 bg-black">

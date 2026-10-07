@@ -17,6 +17,26 @@ export function youtubeId(url: string) {
   return match?.[1];
 }
 
+export function youtubeEmbed(id: string, options?: { mute?: boolean; loop?: boolean }) {
+  const params = new URLSearchParams({
+    autoplay: "1",
+    rel: "0",
+    controls: "0",
+    modestbranding: "1",
+    iv_load_policy: "3",
+    fs: "0",
+    disablekb: "1",
+    playsinline: "1",
+    cc_load_policy: "0",
+  });
+  if (options?.mute) params.set("mute", "1");
+  if (options?.loop) {
+    params.set("loop", "1");
+    params.set("playlist", id);
+  }
+  return `https://www.youtube-nocookie.com/embed/${id}?${params}`;
+}
+
 function vimeoId(url: string) {
   const match = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
   return match?.[1];
@@ -37,26 +57,8 @@ export function resolveMedia(
   url: string,
   options?: { controls?: boolean },
 ): ResolvedMedia {
-  const controls = options?.controls ? "1" : "0";
-  const youtube = youtubeId(url);
-  if (youtube) {
-    const params = new URLSearchParams({
-      autoplay: "1",
-      mute: "1",
-      loop: "1",
-      playlist: youtube,
-      controls,
-      rel: "0",
-      modestbranding: "1",
-      playsinline: "1",
-      iv_load_policy: "3",
-      vq: "hd2160",
-    });
-    return {
-      kind: "embed",
-      src: `https://www.youtube.com/embed/${youtube}?${params}`,
-      poster: posterFor(url),
-    };
+  if (youtubeId(url)) {
+    return { kind: "file", src: "" };
   }
 
   const vimeo = vimeoId(url);

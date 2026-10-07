@@ -28,6 +28,11 @@ export const SITE_MENU_ITEMS = [
 export const NAV_ITEMS = SITE_MENU_ITEMS;
 
 export const PAGE_META = {
+  portfolio: {
+    title: "Portfólio",
+    subtitle: "Projetos em destaque",
+    number: "01",
+  },
   servicos: {
     title: "Serviços",
     subtitle: "O que produzimos",

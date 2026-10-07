@@ -1,6 +1,6 @@
-import { PROJECTS, SITE_VIDEO_1 } from "@/lib/data";
+import { SITE_VIDEO_1 } from "@/lib/data";
 
-const VIDEO = PROJECTS[0].video ?? SITE_VIDEO_1;
+const VIDEO = SITE_VIDEO_1;
 
 export function MaskedVisual() {
   return (

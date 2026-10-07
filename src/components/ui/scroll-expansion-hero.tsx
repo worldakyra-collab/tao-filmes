@@ -1,5 +1,6 @@
 "use client";
 
+import { Anton } from "next/font/google";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { MediaCover } from "@/components/ui/MediaCover";
@@ -9,6 +10,8 @@ import {
   useScroll,
   useTransform,
 } from "framer-motion";
+
+const display = Anton({ weight: "400", subsets: ["latin"] });
 
 interface ScrollExpandMediaProps {
   mediaType?: "video" | "image";
@@ -24,7 +27,7 @@ function MarqueeMark() {
   return (
     <span
       aria-hidden
-      className="mx-[0.28em] inline-block h-[0.78em] w-[0.98em] shrink-0 bg-current"
+      className="pointer-events-none mx-[0.28em] inline-block h-[0.78em] w-[0.98em] shrink-0 select-none bg-current"
       style={{
         WebkitMaskImage: "url(/camaleao.svg)",
         maskImage: "url(/camaleao.svg)",
@@ -60,7 +63,7 @@ function MarqueeRow({
         {[0, 1].map((copy) => (
           <span
             key={copy}
-            className="flex items-center font-serif text-[clamp(2.4rem,6.5vw,5.75rem)] leading-none tracking-[-0.02em] text-white/20 uppercase"
+            className={`${display.className} flex items-center text-[clamp(2.4rem,6.5vw,5.75rem)] leading-none tracking-[-0.02em] text-white/20 uppercase`}
           >
             {marks.map((index) => (
               <span key={index} className="flex items-center">
@@ -87,7 +90,6 @@ const ScrollExpandMedia = ({
   shrinkViewportRatio = 0.9,
 }: ScrollExpandMediaProps) => {
   const [mounted, setMounted] = useState(false);
-  const [mediaOn, setMediaOn] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [viewport, setViewport] = useState({ w: 1200, h: 800 });
 
@@ -107,16 +109,6 @@ const ScrollExpandMedia = ({
   const endW = isMobile ? viewport.w : 320;
   const endH = isMobile ? viewport.h : 500;
   const shrinkDistance = Math.max(viewport.h * shrinkViewportRatio, 1);
-
-  useEffect(() => {
-    const hideAfter = shrinkDistance + viewport.h * 0.12;
-    const sync = (y: number) => {
-      const next = y < hideAfter;
-      setMediaOn((current) => (current === next ? current : next));
-    };
-    sync(scrollY.get());
-    return scrollY.on("change", sync);
-  }, [scrollY, shrinkDistance, viewport.h]);
 
   const scrollProgress = useTransform(scrollY, [0, shrinkDistance], [0, 1], {
     clamp: true,
@@ -147,7 +139,7 @@ const ScrollExpandMedia = ({
         style={mounted ? { opacity: marqueeOpacity } : { opacity: 0 }}
         aria-hidden
       >
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 md:gap-5">
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-5 md:gap-8">
           <MarqueeRow text={marqueeText} direction="left" />
           <MarqueeRow text={marqueeText} direction="right" />
         </div>
@@ -171,7 +163,7 @@ const ScrollExpandMedia = ({
         }
       >
         {mediaType === "video" ? (
-          mediaOn ? <MediaCover src={mediaSrc} title={title} className="h-full w-full" /> : null
+          <MediaCover src={mediaSrc} title={title} className="h-full w-full" />
         ) : (
           <Image
             src={mediaSrc}

@@ -109,10 +109,11 @@ function CardMedia({
 
   return (
     <div ref={ref} className={`relative overflow-hidden bg-neutral-950 ${className}`}>
-      {poster ? (
+      {video ? (
+        active ? <MediaCover src={work.video} /> : null
+      ) : poster ? (
         <img src={poster} alt="" draggable={false} className="absolute inset-0 h-full w-full object-cover" />
       ) : null}
-      {video && active ? <MediaCover src={work.video} /> : null}
     </div>
   );
 }

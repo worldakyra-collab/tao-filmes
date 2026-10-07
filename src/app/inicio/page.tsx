@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { InicioHero } from "@/components/sections/InicioHero";
+import { InicioPortfolio } from "@/components/sections/InicioPortfolio";
 
 export const metadata: Metadata = {
   title: "Início — TAO Filmes",
@@ -8,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default function InicioPage() {
-  return <InicioHero />;
+  return (
+    <>
+      <InicioPortfolio />
+    </>
+  );
 }

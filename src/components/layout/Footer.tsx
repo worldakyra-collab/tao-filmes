@@ -7,20 +7,13 @@ import { BRAND, SITE_MENU_ITEMS } from "@/lib/constants";
 
 const display = Anton({ weight: "400", subsets: ["latin"] });
 
-const WORKS = [
-  { label: "Documentário", href: "/teste-2" },
-  { label: "Publicidade", href: "/teste-2" },
-  { label: "Animação", href: "/teste-2" },
-  { label: "Videoclipe", href: "/teste-2" },
-] as const;
-
 const linkClass =
   "block text-[13px] leading-6 text-[#0A0A0A]/80 transition-opacity hover:opacity-60 md:text-sm";
 
 export function Footer() {
   const pathname = usePathname();
 
-  if (pathname === "/" || pathname === "/teste-2") {
+  if (pathname === "/") {
     return null;
   }
 
@@ -54,13 +47,6 @@ export function Footer() {
           </div>
 
           <div className="flex flex-wrap gap-x-14 gap-y-8">
-            <nav>
-              {WORKS.map((item) => (
-                <Link key={item.label} href={item.href} className={linkClass}>
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
             <nav>
               <a
                 href={BRAND.instagram}

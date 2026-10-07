@@ -19,6 +19,21 @@ export function Header() {
   }, [pathname]);
 
   useEffect(() => {
+    const block = (event: Event) => {
+      const target = event.target;
+      if (target instanceof HTMLImageElement && target.src.includes("camaleao")) {
+        event.preventDefault();
+      }
+    };
+    document.addEventListener("dragstart", block);
+    document.addEventListener("contextmenu", block);
+    return () => {
+      document.removeEventListener("dragstart", block);
+      document.removeEventListener("contextmenu", block);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!menuOpen) return;
 
     const unlock = lockBodyScroll();
@@ -40,9 +55,9 @@ export function Header() {
           <Link
             href="/inicio"
             aria-label={BRAND.name}
-            className="pointer-events-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-opacity duration-500 hover:opacity-70"
+            className="pointer-events-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 mix-blend-difference"
           >
-            <img src="/camaleao.svg" alt="" className="h-16 w-auto md:h-20" />
+            <img src="/camaleao.svg" alt="" draggable={false} className="h-16 w-auto select-none md:h-20" />
           </Link>
           <div className={`pointer-events-auto ${menuOpen ? "invisible" : ""}`}>
             <MenuButton open={menuOpen} onClick={toggleMenu} />

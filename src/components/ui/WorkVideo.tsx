@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { resolveMedia, youtubeId } from "@/lib/portfolio-videos";
-import { YoutubeFrame } from "@/components/ui/YoutubeFrame";
+import { resolveMedia, youtubeEmbed, youtubeId } from "@/lib/portfolio-videos";
 
 function SpeakerIcon({ muted }: { muted: boolean }) {
   return (
@@ -24,26 +23,29 @@ export function WorkVideo({ src }: { src: string }) {
   const youtube = youtubeId(src);
   if (youtube) {
     return (
-      <YoutubeFrame
-        videoId={youtube}
-        controls
-        className="mt-10 aspect-video w-full overflow-hidden rounded-[22px]"
-      />
+      <div className="relative mt-10 aspect-video overflow-hidden rounded-[2rem] bg-neutral-950 isolate [clip-path:inset(0_round_2rem)]">
+        <iframe
+          src={youtubeEmbed(youtube, { mute: true, loop: true })}
+          title="Vídeo"
+          className="pointer-events-none absolute top-1/2 left-1/2 h-[130%] w-[130%] -translate-x-1/2 -translate-y-1/2 border-0"
+          allow="autoplay; encrypted-media"
+        />
+        <div className="video-overlay pointer-events-none absolute inset-0" />
+      </div>
     );
   }
 
-  const media = resolveMedia(src, { controls: true });
+  const media = resolveMedia(src);
   if (media.kind === "embed") {
     return (
-      <div className="relative mt-10 overflow-hidden rounded-[22px] bg-neutral-950">
+      <div className="relative mt-10 aspect-video overflow-hidden rounded-[2rem] bg-neutral-950 isolate [clip-path:inset(0_round_2rem)]">
         <iframe
           src={media.src}
           title="Vídeo"
-          className="aspect-video w-full border-0"
-          allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
-          referrerPolicy="strict-origin-when-cross-origin"
-          allowFullScreen
+          className="pointer-events-none absolute inset-0 h-full w-full border-0"
+          allow="autoplay; encrypted-media"
         />
+        <div className="video-overlay pointer-events-none absolute inset-0" />
       </div>
     );
   }
@@ -58,7 +60,6 @@ function FileWorkVideo({ src }: { src: string }) {
   const headRef = useRef<HTMLDivElement>(null);
   const userPaused = useRef(false);
   const [muted, setMuted] = useState(true);
-  const [playing, setPlaying] = useState(true);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -78,22 +79,15 @@ function FileWorkVideo({ src }: { src: string }) {
 
     const start = () => {
       if (userPaused.current) return;
-      void video.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+      void video.play().catch(() => {});
     };
 
-    const onPlay = () => setPlaying(true);
-    const onPause = () => setPlaying(false);
-
-    video.addEventListener("play", onPlay);
-    video.addEventListener("pause", onPause);
     video.addEventListener("loadeddata", start);
     if (video.readyState >= 2) start();
     frame = requestAnimationFrame(tick);
 
     return () => {
       cancelAnimationFrame(frame);
-      video.removeEventListener("play", onPlay);
-      video.removeEventListener("pause", onPause);
       video.removeEventListener("loadeddata", start);
     };
   }, [src]);
@@ -111,18 +105,6 @@ function FileWorkVideo({ src }: { src: string }) {
     setMuted(nextMuted);
   }
 
-  function togglePlay() {
-    const video = videoRef.current;
-    if (!video) return;
-    if (video.paused) {
-      userPaused.current = false;
-      void video.play();
-    } else {
-      userPaused.current = true;
-      video.pause();
-    }
-  }
-
   function seek(event: React.MouseEvent<HTMLDivElement>) {
     const video = videoRef.current;
     const track = trackRef.current;
@@ -135,7 +117,7 @@ function FileWorkVideo({ src }: { src: string }) {
   }
 
   return (
-    <div className="relative mt-10 overflow-hidden rounded-[22px] bg-neutral-950">
+    <div className="relative mt-10 overflow-hidden rounded-[2rem] bg-neutral-950 isolate [clip-path:inset(0_round_2rem)]">
       <video
         ref={videoRef}
         src={src}
@@ -150,16 +132,9 @@ function FileWorkVideo({ src }: { src: string }) {
         className="pointer-events-none aspect-video w-full object-cover"
       />
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-20 bg-gradient-to-t from-black/50 to-transparent" />
+      <div className="video-overlay pointer-events-none absolute inset-0 z-10" />
 
       <div className="absolute inset-x-0 bottom-0 z-10 flex items-center gap-4 px-5 pb-4">
-        <button
-          type="button"
-          onClick={togglePlay}
-          className="shrink-0 text-[10px] tracking-[0.28em] text-white uppercase"
-        >
-          {playing ? "Pause" : "Play"}
-        </button>
         <div
           ref={trackRef}
           role="slider"
