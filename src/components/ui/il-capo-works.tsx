@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import Link from "next/link";
 import {
   motion,
   useScroll,
@@ -100,17 +99,6 @@ function WorkVideo({ src, title }: { src: string; title: string }) {
   return <MediaCover src={src} title={title} />;
 }
 
-function VerTrabalhoButton({ slug }: { slug: string }) {
-  return (
-    <Link
-      href={`/servicos/${slug}`}
-      className="pointer-events-auto mt-8 inline-flex items-center justify-center rounded-full border border-white/40 bg-white/15 px-8 py-3 text-[11px] tracking-[0.24em] text-white uppercase shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] backdrop-blur-md transition-colors duration-300 hover:border-white/60 hover:bg-white/25"
-    >
-      Ver trabalho
-    </Link>
-  );
-}
-
 function WorkPanel({ work }: { work: WorkItem }) {
   const lines = titleLines(work.title);
 
@@ -135,7 +123,6 @@ function WorkPanel({ work }: { work: WorkItem }) {
         >
           {work.subtitle}
         </p>
-        <VerTrabalhoButton slug={work.slug} />
       </div>
     </article>
   );
@@ -268,12 +255,6 @@ function StackSlide({
         >
           {work.subtitle}
         </motion.p>
-        <motion.div
-          className="pointer-events-auto absolute right-6 bottom-6 z-10 sm:right-10 sm:bottom-10 [&_a]:mt-0"
-          style={{ y: subtitleY, opacity: subtitleOpacity }}
-        >
-          <VerTrabalhoButton slug={work.slug} />
-        </motion.div>
       </div>
     </article>
   );

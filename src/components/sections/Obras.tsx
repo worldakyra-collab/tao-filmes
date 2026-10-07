@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import Link from "next/link";
 import { PROJECTS } from "@/lib/data";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -19,10 +18,7 @@ export function Obras() {
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.9, delay: index * 0.08, ease: EASE }}
           >
-            <Link
-              href={`/portfolio/${project.slug}`}
-              className="group block"
-            >
+            <div className="group block">
               <div className="relative aspect-[16/10] overflow-hidden bg-black">
                 <Image
                   src={project.image}
@@ -46,7 +42,7 @@ export function Obras() {
                   </span>
                 </div>
               </div>
-            </Link>
+            </div>
           </motion.div>
         ))}
       </div>

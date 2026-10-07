@@ -2,7 +2,6 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
-import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { BRAND } from "@/lib/constants";
 import { PROJECTS } from "@/lib/data";
@@ -64,9 +63,7 @@ export function HomeShowcase() {
         <span className="ml-3 text-white/70">00:00:00</span>
       </p>
 
-      <Link
-        href={`/portfolio/${PROJECTS[4].slug}`}
-        aria-label={PROJECTS[4].title}
+      <div
         className="absolute right-4 bottom-[4.5rem] z-20 block overflow-hidden rounded-md md:right-6 md:bottom-20"
         style={{ width: "min(26vw, 300px)", aspectRatio: "16 / 9" }}
       >
@@ -77,7 +74,7 @@ export function HomeShowcase() {
           className="object-cover"
           sizes="300px"
         />
-      </Link>
+      </div>
 
       <div className="absolute inset-x-0 bottom-0 z-10">
         <div className="relative flex items-center justify-between gap-3 px-4 pt-3 pb-5 md:px-6 md:pb-6">
