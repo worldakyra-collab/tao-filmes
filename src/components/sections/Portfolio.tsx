@@ -11,28 +11,6 @@ const EASE = [0.33, 0, 0.2, 1] as const;
 const FEATURED_COUNT = 3;
 const display = Anton({ weight: "400", subsets: ["latin"] });
 
-function ProjectCta({ href }: { href: string }) {
-  const [leaving, setLeaving] = useState(false);
-
-  return (
-    <Link
-      href={href}
-      onClick={() => setLeaving(true)}
-      className="group/cta relative inline-flex items-center gap-3 text-[10px] tracking-[0.3em] text-foreground/50 uppercase transition-colors duration-500 hover:text-foreground"
-    >
-      Ver projeto
-      <span className="text-sm leading-none transition-transform duration-500 group-hover:translate-x-1">
-        →
-      </span>
-      <span
-        className={`absolute -bottom-2 left-0 h-px bg-gradient-to-r from-brand-blue/60 to-brand-green/60 transition-all duration-700 ${
-          leaving ? "w-full translate-x-full opacity-0" : "w-0 group-hover:w-full"
-        }`}
-      />
-    </Link>
-  );
-}
-
 function ProjectImage({ project }: { project: Project }) {
   return (
     <div className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-background md:aspect-[16/11]">
@@ -92,9 +70,13 @@ function ProjectContent({ project }: { project: Project }) {
         </p>
       </TextLine>
 
-      <div className="mt-10">
-        <ProjectCta href={`/portfolio/${project.slug}`} />
-      </div>
+      <Link
+        href={`/portfolio/${project.slug}`}
+        className="mt-8 inline-flex w-fit items-center gap-3 border-b border-white/40 pb-2 text-[11px] tracking-[0.28em] text-white uppercase"
+      >
+        Ver projeto
+        <span aria-hidden>→</span>
+      </Link>
     </div>
   );
 }
