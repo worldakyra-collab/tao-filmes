@@ -3,12 +3,35 @@
 import { Anton } from "next/font/google";
 import { type ReactNode, useState } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { MediaCover } from "@/components/ui/MediaCover";
 import { type Project, PROJECTS } from "@/lib/data";
 
 const EASE = [0.33, 0, 0.2, 1] as const;
 const FEATURED_COUNT = 3;
 const display = Anton({ weight: "400", subsets: ["latin"] });
+
+function ProjectCta({ href }: { href: string }) {
+  const [leaving, setLeaving] = useState(false);
+
+  return (
+    <Link
+      href={href}
+      onClick={() => setLeaving(true)}
+      className="group/cta relative inline-flex items-center gap-3 text-[10px] tracking-[0.3em] text-foreground/50 uppercase transition-colors duration-500 hover:text-foreground"
+    >
+      Ver projeto
+      <span className="text-sm leading-none transition-transform duration-500 group-hover:translate-x-1">
+        →
+      </span>
+      <span
+        className={`absolute -bottom-2 left-0 h-px bg-gradient-to-r from-brand-blue/60 to-brand-green/60 transition-all duration-700 ${
+          leaving ? "w-full translate-x-full opacity-0" : "w-0 group-hover:w-full"
+        }`}
+      />
+    </Link>
+  );
+}
 
 function ProjectImage({ project }: { project: Project }) {
   return (
@@ -68,6 +91,10 @@ function ProjectContent({ project }: { project: Project }) {
           {project.category} • {project.year}
         </p>
       </TextLine>
+
+      <TextLine delay={0.36} className="mt-10">
+        <ProjectCta href={`/portfolio/${project.slug}`} />
+      </TextLine>
     </div>
   );
 }
@@ -97,7 +124,9 @@ function ProjectRow({
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.9, ease: EASE }}
       >
-        <ProjectImage project={project} />
+        <Link href={`/portfolio/${project.slug}`} className="block">
+          <ProjectImage project={project} />
+        </Link>
       </motion.div>
       <div className={imageLeft ? "order-2" : "order-2 lg:order-1"}>
         <ProjectContent project={project} />
