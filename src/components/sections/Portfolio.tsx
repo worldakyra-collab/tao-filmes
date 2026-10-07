@@ -52,6 +52,28 @@ function TextLine({
   );
 }
 
+function ProjectCta({ href }: { href: string }) {
+  const [leaving, setLeaving] = useState(false);
+
+  return (
+    <Link
+      href={href}
+      onClick={() => setLeaving(true)}
+      className="group/cta relative mt-10 inline-flex items-center gap-3 text-[10px] tracking-[0.3em] text-foreground/50 uppercase transition-colors duration-500 hover:text-foreground"
+    >
+      Ver projeto
+      <span className="text-sm leading-none transition-transform duration-500 group-hover/cta:translate-x-1">
+        →
+      </span>
+      <span
+        className={`absolute -bottom-2 left-0 h-px bg-gradient-to-r from-brand-blue/60 to-brand-green/60 transition-all duration-700 ${
+          leaving ? "w-full translate-x-full opacity-0" : "w-0 group-hover/cta:w-full"
+        }`}
+      />
+    </Link>
+  );
+}
+
 function ProjectContent({ project }: { project: Project }) {
   return (
     <div className="flex flex-col justify-center px-2 py-8 md:px-6 lg:py-0">
@@ -70,13 +92,7 @@ function ProjectContent({ project }: { project: Project }) {
         </p>
       </TextLine>
 
-      <Link
-        href={`/portfolio/${project.slug}`}
-        className="mt-8 inline-flex w-fit items-center gap-3 border-b border-white/40 pb-2 text-[11px] tracking-[0.28em] text-white uppercase"
-      >
-        Ver projeto
-        <span aria-hidden>→</span>
-      </Link>
+      <ProjectCta href={`/portfolio/${project.slug}`} />
     </div>
   );
 }
