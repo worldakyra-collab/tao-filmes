@@ -1,7 +1,7 @@
 "use client";
 
 import { Anton } from "next/font/google";
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { MediaCover } from "@/components/ui/MediaCover";
@@ -13,7 +13,7 @@ const display = Anton({ weight: "400", subsets: ["latin"] });
 
 function ProjectImage({ project }: { project: Project }) {
   return (
-    <div className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-background md:aspect-[16/11]">
+    <div className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-black md:aspect-[16/11]">
       <motion.div
         className="absolute inset-0"
         initial={{ opacity: 0, scale: 1.05 }}
@@ -22,7 +22,7 @@ function ProjectImage({ project }: { project: Project }) {
         transition={{ duration: 1.1, ease: EASE }}
       >
         {project.video ? (
-          <MediaCover src={project.video} title={project.title} poster={project.image} />
+          <MediaCover src={project.video} title={project.title} poster={project.image} href={`/portfolio/${project.slug}`} />
         ) : null}
         <div className="pointer-events-none absolute inset-0 bg-black/0 transition-colors duration-700 group-hover:bg-black/25" />
       </motion.div>
@@ -109,7 +109,7 @@ function ProjectRow({
 
   return (
     <motion.div
-      className={`${ready ? "group" : ""} grid grid-cols-1 items-center gap-10 md:gap-16 lg:grid-cols-2 lg:gap-20 xl:gap-28`}
+      className={`${ready ? "group" : ""} grid grid-cols-1 items-center gap-10 overflow-x-clip md:gap-16 lg:grid-cols-2 lg:gap-20 xl:gap-28`}
       onViewportEnter={() => {
         window.setTimeout(() => setReady(true), 1000);
       }}
@@ -122,9 +122,7 @@ function ProjectRow({
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.9, ease: EASE }}
       >
-        <Link href={`/portfolio/${project.slug}`} className="block">
-          <ProjectImage project={project} />
-        </Link>
+        <ProjectImage project={project} />
       </motion.div>
       <div className={imageLeft ? "order-2" : "order-2 lg:order-1"}>
         <ProjectContent project={project} />
@@ -158,7 +156,7 @@ function BrandLine() {
   const marks = Array.from({ length: 8 }, (_, index) => index);
 
   return (
-    <div className="relative left-1/2 my-16 w-screen -translate-x-1/2 overflow-hidden py-10 whitespace-nowrap md:my-24 md:py-14" aria-hidden>
+    <div className="relative left-1/2 my-16 w-dvw max-w-[100dvw] -translate-x-1/2 overflow-hidden py-10 whitespace-nowrap md:my-24 md:py-14" aria-hidden>
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -202,13 +200,36 @@ function BrandLine() {
 }
 
 export function Portfolio() {
-  const featured = PROJECTS.slice(0, FEATURED_COUNT);
+  const [featured, setFeatured] = useState(PROJECTS.slice(0, FEATURED_COUNT));
+
+  useEffect(() => {
+    void fetch("/api/painel/estado")
+      .then((response) => response.json())
+      .then((data: { version: number; inicio: { id: string; title: string; year: string; client: string; category: string; video: string }[] }) => {
+        if (!data.version || !data.inicio?.length) return;
+        setFeatured(
+          data.inicio.slice(0, 5).map((work) => ({
+            id: work.id,
+            slug: work.id,
+            title: work.title,
+            category: work.category,
+            year: work.year,
+            client: work.client,
+            image: "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1600&q=80",
+            video: work.video,
+            layout: "left" as const,
+            description: work.client || work.category,
+          })),
+        );
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <>
       <section
         id="projetos"
-        className="bg-background px-6 pt-24 pb-24 md:px-12 md:pt-32 md:pb-32"
+        className="overflow-x-clip bg-background px-6 pt-24 pb-24 md:px-12 md:pt-32 md:pb-32"
       >
         <div className="mx-auto max-w-[1800px]">
           {featured.map((project, index) => (

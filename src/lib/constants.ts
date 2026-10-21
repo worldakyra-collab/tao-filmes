@@ -22,6 +22,7 @@ export const SITE_MENU_ITEMS = [
   { label: "Humana", href: "/humana" },
   { label: "Contato", href: "/contato" },
   { label: "Obras", href: "/teste-2" },
+  { label: "Trabalhos", href: "/trabalhos" },
 ] as const;
 
 /** @deprecated use SITE_MENU_ITEMS — mantido como alias para compatibilidade */

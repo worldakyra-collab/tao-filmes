@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { BRAND } from "@/lib/constants";
 import { MenuButton, SiteMenu } from "@/components/layout/SiteMenu";
 import { lockBodyScroll } from "@/lib/scroll-lock";
 
@@ -52,12 +51,16 @@ export function Header() {
     <>
       <header className="pointer-events-none fixed top-0 right-0 left-0 z-50">
         <div className="relative flex items-center justify-end px-6 py-5 md:px-12 md:py-6">
+          {pathname === "/humana" ? (
+            <p className="pointer-events-none absolute top-1/2 left-6 hidden max-w-[34%] -translate-y-1/2 text-[9px] tracking-[0.18em] text-white uppercase md:block md:left-12 md:text-[10px]">
+              Tao Filmes × Humana & Trad
+            </p>
+          ) : null}
           <Link
             href="/inicio"
-            aria-label={BRAND.name}
             className="pointer-events-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 mix-blend-difference"
           >
-            <img src="/camaleao.svg" alt="" draggable={false} className="h-16 w-auto select-none md:h-20" />
+            <img src="/camaleao.svg" alt="TAO Filmes" draggable={false} className="h-12 w-auto select-none sm:h-16 md:h-20" />
           </Link>
           <div className={`pointer-events-auto ${menuOpen ? "invisible" : ""}`}>
             <MenuButton open={menuOpen} onClick={toggleMenu} />

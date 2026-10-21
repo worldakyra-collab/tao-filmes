@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
-import { Anton, Archivo_Black, DM_Sans, Instrument_Serif } from "next/font/google";
+import { Anton, Archivo_Black, DM_Sans, Instrument_Serif, Neucha } from "next/font/google";
+import { CookieNotice } from "@/components/layout/CookieNotice";
 import { PageTransitionProvider } from "@/components/layout/PageTransition";
+import { SiteLive } from "@/components/layout/SiteLive";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -27,6 +29,12 @@ const instrumentSerif = Instrument_Serif({
   weight: "400",
 });
 
+const neucha = Neucha({
+  variable: "--font-marker",
+  subsets: ["latin"],
+  weight: "400",
+});
+
 export const metadata: Metadata = {
   title: "TAO Filmes — Transformação em movimento",
   description:
@@ -47,10 +55,17 @@ export default function RootLayout({
     <html
       lang="pt-BR"
       data-scroll-behavior="smooth"
-      className={`${dmSans.variable} ${anton.variable} ${archivoBlack.variable} ${instrumentSerif.variable} h-full antialiased`}
+      className={`${dmSans.variable} ${anton.variable} ${archivoBlack.variable} ${instrumentSerif.variable} ${neucha.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-background text-foreground">
-        <PageTransitionProvider>{children}</PageTransitionProvider>
+        <a href="#conteudo" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[90] focus:rounded-full focus:bg-white focus:px-4 focus:py-2 focus:text-black">
+          Ir para o conteúdo
+        </a>
+        <SiteLive />
+        <PageTransitionProvider>
+          <div id="conteudo">{children}</div>
+        </PageTransitionProvider>
+        <CookieNotice />
       </body>
     </html>
   );

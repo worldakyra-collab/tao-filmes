@@ -167,7 +167,7 @@ export function SobreSpotlight() {
           <div className="relative z-10 lg:col-span-5">
             <div className="flex items-center gap-4 lg:gap-5">
               <h2
-                className={`${display.className} text-[clamp(2.4rem,4.2vw,3.8rem)] leading-[0.88] tracking-[-0.03em] uppercase`}
+                className="text-[clamp(2.4rem,4.2vw,3.8rem)] leading-[0.95] tracking-[-0.01em] uppercase"
               >
                 sobre a
                 <br />
@@ -251,7 +251,8 @@ export function SobreSpotlight() {
             TAO Filmes
           </p>
           <div
-            className={`${display.className} shrink-0 text-right text-[clamp(2.6rem,5.2vw,5.4rem)] leading-[0.9] tracking-[-0.03em] uppercase`}
+            className="shrink-0 text-right text-[clamp(2.6rem,5.2vw,5.4rem)] leading-[0.95] tracking-[-0.01em] uppercase"
+            style={{ fontFamily: "var(--font-marker), Neucha, cursive" }}
           >
             <p>Cada</p>
             <p>frame</p>
@@ -261,7 +262,8 @@ export function SobreSpotlight() {
         </div>
 
         <div
-          className={`${display.className} mt-8 text-right text-[clamp(2.6rem,14vw,4rem)] leading-[0.9] tracking-[-0.03em] uppercase select-none lg:hidden`}
+          className="mt-8 text-right text-[clamp(2.6rem,14vw,4rem)] leading-[0.95] tracking-[-0.01em] uppercase select-none lg:hidden"
+          style={{ fontFamily: "var(--font-marker), Neucha, cursive" }}
         >
           <p>Cada</p>
           <p>frame</p>

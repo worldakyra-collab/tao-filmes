@@ -75,6 +75,8 @@ export function InicioPortfolio() {
             muted
             loop
             playsInline
+            preload="metadata"
+            aria-label="Filme de abertura da TAO Filmes"
             className="absolute inset-0 h-full w-full object-cover"
             poster="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1920&q=80"
           >
@@ -117,7 +119,12 @@ export function InicioPortfolio() {
                   {meta.subtitle}
                 </span>
               </div>
-              <p className="font-serif text-5xl tracking-tight md:text-7xl lg:text-8xl">Início</p>
+              <p
+                className="text-5xl tracking-tight md:text-7xl lg:text-8xl"
+                style={{ fontFamily: "var(--font-marker), Neucha, cursive" }}
+              >
+                Início
+              </p>
             </div>
           </div>
         </section>

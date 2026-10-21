@@ -1,10 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Anton } from "next/font/google";
 import { BRAND, SITE_MENU_ITEMS } from "@/lib/constants";
-
-const display = Anton({ weight: "400", subsets: ["latin"] });
 
 const linkClass =
   "block text-[13px] leading-6 text-[#0A0A0A]/80 transition-opacity hover:opacity-60 md:text-sm";
@@ -62,14 +59,20 @@ export function Footer() {
         </div>
 
         <p
-          className={`${display.className} mt-8 max-w-full text-[clamp(1.85rem,12.4vw,10.5rem)] leading-[0.78] tracking-[-0.045em] whitespace-nowrap uppercase md:mt-10`}
+          className="font-serif mt-8 max-w-full overflow-hidden text-[clamp(1.55rem,11.2vw,10.5rem)] leading-[0.85] tracking-[-0.02em] whitespace-nowrap uppercase md:mt-10"
         >
           TAO Filmes
         </p>
 
         <div className="mt-4 flex flex-col gap-3 border-t border-[#0A0A0A]/15 pt-4 text-[11px] tracking-[0.16em] text-[#0A0A0A]/70 uppercase sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} {BRAND.name}</p>
-          <nav className="flex gap-6">
+          <nav className="flex flex-wrap gap-x-6 gap-y-2">
+            <Link href="/privacidade" className="transition-opacity hover:opacity-70">Privacidade</Link>
+            <Link href="/termos" className="transition-opacity hover:opacity-70">Termos</Link>
+            <Link href="/lgpd" className="transition-opacity hover:opacity-70">LGPD</Link>
+            <button type="button" onClick={() => window.dispatchEvent(new Event("tao-cookies"))} className="transition-opacity hover:opacity-70">
+              Cookies
+            </button>
             <a
               href={BRAND.instagram}
               target="_blank"

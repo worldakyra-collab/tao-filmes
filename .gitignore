@@ -33,6 +33,9 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# pedidos da LGPD ficam só no servidor
+data/lgpd-pedidos.jsonl
+
 # vercel
 .vercel
 

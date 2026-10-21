@@ -1,0 +1,108 @@
+{
+  "version": 1,
+  "inicioIds": [
+    "inicio-roadside",
+    "inicio-olhar",
+    "inicio-alem-do-horizonte",
+    "inicio-nos-bastidores",
+    "novo-1792526266316"
+  ],
+  "obrasIds": [
+    "obra-02",
+    "obra-03",
+    "novo-1792526266316",
+    "obra-01",
+    "obra-04",
+    "obra-05"
+  ],
+  "works": [
+    {
+      "id": "inicio-roadside",
+      "title": "Roadside",
+      "year": "2025",
+      "client": "",
+      "category": "Longa",
+      "video": "/video/1.mp4"
+    },
+    {
+      "id": "inicio-olhar",
+      "title": "Olhar",
+      "year": "2024",
+      "client": "",
+      "category": "Retrato",
+      "video": "/video/2.mp4"
+    },
+    {
+      "id": "inicio-nagano-prefeature",
+      "title": "Nagano Prefeature",
+      "year": "2025",
+      "client": "",
+      "category": "Esportes",
+      "video": "https://drive.google.com/file/d/16mBAtVSWEQg73REo2fFsejcdFLfT1KjX/view"
+    },
+    {
+      "id": "inicio-alem-do-horizonte",
+      "title": "Além do Horizonte",
+      "year": "2024",
+      "client": "",
+      "category": "Institucional",
+      "video": "/video/3.mp4"
+    },
+    {
+      "id": "inicio-nos-bastidores",
+      "title": "Nos Bastidores",
+      "year": "2023",
+      "client": "",
+      "category": "Documentário",
+      "video": "/video/4.mp4"
+    },
+    {
+      "id": "obra-01",
+      "title": "A Tabi Film",
+      "year": "2025",
+      "client": "Maison Margiela",
+      "category": "Iconic Shoe Masterpiece",
+      "video": "https://www.youtube.com/watch?v=nvWnxO4nS_4"
+    },
+    {
+      "id": "obra-02",
+      "title": "Il Tappeto Verde",
+      "year": "2025",
+      "client": "Juventus",
+      "category": "Junior Project",
+      "video": "https://drive.google.com/file/d/16mBAtVSWEQg73REo2fFsejcdFLfT1KjX/view"
+    },
+    {
+      "id": "obra-03",
+      "title": "Dans Valentino",
+      "year": "2025",
+      "client": "Valentino",
+      "category": "Le Pavillon Des Folies",
+      "video": "https://drive.google.com/file/d/16mBAtVSWEQg73REo2fFsejcdFLfT1KjX/view"
+    },
+    {
+      "id": "obra-04",
+      "title": "Mosaico",
+      "year": "2024",
+      "client": "Buccellati",
+      "category": "Bren Heritage Film",
+      "video": "https://www.youtube.com/watch?v=nvWnxO4nS_4"
+    },
+    {
+      "id": "obra-05",
+      "title": "Maison De L'Amour",
+      "year": "2024",
+      "client": "Gucci",
+      "category": "A Defining Fashion Film",
+      "video": "https://drive.google.com/file/d/16mBAtVSWEQg73REo2fFsejcdFLfT1KjX/view"
+    },
+    {
+      "id": "novo-1792526266316",
+      "title": "h",
+      "year": "j",
+      "client": "k",
+      "category": "u",
+      "video": "/video/5.mp4"
+    }
+  ]
+}

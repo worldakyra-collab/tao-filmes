@@ -27,7 +27,7 @@ export function getProjectBySlug(slug: string): Project | undefined {
 export const SITE_VIDEO_1 = "/video/esse1.mp4";
 export const SITE_VIDEO_2 = "/video/esse2.mp4";
 
-export const HERO_VIDEO = SITE_VIDEO_1;
+export const HERO_VIDEO = "/video/reel.mp4";
 
 export const ABOUT_VIDEO = SITE_VIDEO_2;
 

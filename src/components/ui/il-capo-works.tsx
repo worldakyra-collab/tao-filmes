@@ -9,6 +9,7 @@ import {
   type MotionValue,
 } from "framer-motion";
 import { Archivo_Black, Cormorant_Garamond } from "next/font/google";
+import Link from "next/link";
 import { MediaCover } from "@/components/ui/MediaCover";
 import { PORTFOLIO_VIDEOS } from "@/lib/portfolio-videos";
 
@@ -103,7 +104,7 @@ function WorkPanel({ work }: { work: WorkItem }) {
   const lines = titleLines(work.title);
 
   return (
-    <article className="relative h-dvh w-screen shrink-0 overflow-hidden bg-black">
+    <article className="relative h-dvh w-dvw max-w-[100dvw] shrink-0 overflow-hidden bg-black">
       <WorkVideo src={work.video} title={work.title} />
       <div className="absolute inset-0 bg-black/25" />
 
@@ -172,7 +173,7 @@ export function IlCapoWorksRail() {
     <section
       ref={containerRef}
       aria-label="Trabalhos"
-      className={`${displaySans.variable} ${displaySerif.variable} relative z-10`}
+      className={`${displaySans.variable} ${displaySerif.variable} relative z-10 overflow-x-clip`}
       style={{ height: `${railVh}vh` }}
     >
       <div className="sticky top-0 h-dvh overflow-hidden bg-black">
@@ -255,6 +256,13 @@ function StackSlide({
         >
           {work.subtitle}
         </motion.p>
+
+        <Link
+          href={`/portfolio/${work.slug}`}
+          className="absolute right-6 bottom-8 z-10 border border-white/40 px-5 py-3 text-[10px] tracking-[0.28em] text-white uppercase transition-colors duration-300 hover:border-white hover:bg-white hover:text-black sm:right-10 sm:bottom-10"
+        >
+          Ver detalhes
+        </Link>
       </div>
     </article>
   );
@@ -264,12 +272,34 @@ function StackSlide({
  * Cards empilhados com vídeo — usados no /teste-2 depois do carrossel.
  */
 export function IlCapoWorksStack() {
+  const [works, setWorks] = useState(WORKS.slice(0, 4));
+
+  useEffect(() => {
+    void fetch("/api/painel/estado")
+      .then((response) => response.json())
+      .then((data: { version: number; obras: { id: string; title: string; client: string; category?: string; video: string }[] }) => {
+        if (!data.version || !data.obras?.length) return;
+        setWorks(
+          data.obras.map((work, index) => ({
+            id: work.id,
+            slug: work.id,
+            title: work.title,
+            subtitle: work.category || work.client,
+            client: work.client,
+            number: String(index + 1).padStart(2, "0"),
+            video: work.video,
+          })),
+        );
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <section
       aria-label="Trabalhos em cards"
       className={`${displaySans.variable} ${displaySerif.variable} relative z-10 bg-black`}
     >
-      {WORKS.slice(0, 4).map((work, index) => (
+      {works.map((work, index) => (
         <StackSlide key={`stack-${work.id}`} work={work} index={index} />
       ))}
     </section>

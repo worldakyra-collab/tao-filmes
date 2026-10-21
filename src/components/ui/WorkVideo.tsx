@@ -92,6 +92,18 @@ function FileWorkVideo({ src }: { src: string }) {
     };
   }, [src]);
 
+  function togglePlay() {
+    const video = videoRef.current;
+    if (!video) return;
+    if (video.paused) {
+      userPaused.current = false;
+      void video.play();
+    } else {
+      userPaused.current = true;
+      video.pause();
+    }
+  }
+
   function toggleSound() {
     const video = videoRef.current;
     if (!video) return;
@@ -133,6 +145,13 @@ function FileWorkVideo({ src }: { src: string }) {
       />
 
       <div className="video-overlay pointer-events-none absolute inset-0 z-10" />
+
+      <button
+        type="button"
+        onClick={togglePlay}
+        aria-label="Pausar ou continuar o vídeo"
+        className="absolute inset-0 z-10 cursor-pointer"
+      />
 
       <div className="absolute inset-x-0 bottom-0 z-10 flex items-center gap-4 px-5 pb-4">
         <div
