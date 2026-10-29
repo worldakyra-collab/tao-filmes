@@ -13,7 +13,7 @@ type PageHeroProps = {
 
 export function PageHero({ title, subtitle, number, image, video }: PageHeroProps) {
   return (
-    <section className="relative h-[55vh] md:h-[60vh] w-full overflow-hidden flex items-end">
+    <section className="relative flex h-[55vh] w-full items-end overflow-hidden bg-black md:h-[60vh]">
       {video ? (
         <>
           <video
@@ -21,8 +21,8 @@ export function PageHero({ title, subtitle, number, image, video }: PageHeroProp
             muted
             loop
             playsInline
-            className="absolute inset-0 h-full w-full object-cover"
-            poster={image}
+            className="absolute inset-0 h-full w-full bg-black object-cover opacity-0 transition-opacity duration-700 data-[ready=true]:opacity-100"
+            onPlaying={(event) => event.currentTarget.setAttribute("data-ready", "true")}
           >
             <source src={video} type="video/mp4" />
           </video>

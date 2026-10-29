@@ -15,6 +15,8 @@ export function InicioPortfolio() {
   const titleRef = useRef<HTMLDivElement>(null);
   const heroTextRef = useRef<HTMLDivElement>(null);
   const lockY = useRef<number | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const painted = useRef(-1);
 
   useEffect(() => {
     let frame = 0;
@@ -28,12 +30,24 @@ export function InicioPortfolio() {
     };
 
     const apply = () => {
-      if (lockY.current != null) return;
+      const video = videoRef.current;
+      if (lockY.current != null) {
+        video?.pause();
+        return;
+      }
 
       const distance = window.innerHeight;
       const y = window.scrollY;
       const progress = Math.min(1, Math.max(0, y / distance));
-      paint(progress);
+      if (video) {
+        if (progress > 0.4) video.pause();
+        else if (video.paused) void video.play().catch(() => {});
+      }
+      const step = Math.round(progress * 40) / 40;
+      if (step !== painted.current) {
+        painted.current = step;
+        paint(step);
+      }
 
       if (progress < 1) return;
 
@@ -69,16 +83,17 @@ export function InicioPortfolio() {
   return (
     <>
       <div ref={trackRef} className="relative h-[155vh]">
-        <section ref={panelRef} className="sticky top-0 h-screen w-full overflow-hidden">
+        <section ref={panelRef} className="sticky top-0 h-screen w-full overflow-hidden bg-black">
           <video
+            ref={videoRef}
             autoPlay
             muted
             loop
             playsInline
             preload="metadata"
             aria-label="Filme de abertura da TAO Filmes"
-            className="absolute inset-0 h-full w-full object-cover"
-            poster="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1920&q=80"
+            className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-700 data-[ready=true]:opacity-100"
+            onPlaying={(event) => event.currentTarget.setAttribute("data-ready", "true")}
           >
             <source src={HERO_VIDEO} type="video/mp4" />
           </video>

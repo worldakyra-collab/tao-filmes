@@ -96,16 +96,14 @@ function Hero() {
   return (
     <div ref={trackRef} id="inicio" className="relative h-[155vh]">
       <section ref={panelRef} className="sticky top-0 h-screen w-full overflow-hidden bg-black">
-        {videoFailed ? (
-          <Image src={hero.poster} alt="" fill priority className="object-cover" sizes="100vw" />
-        ) : (
+        {videoFailed ? null : (
           <video
-            className="absolute inset-0 h-full w-full object-cover"
+            className="absolute inset-0 h-full w-full bg-black object-cover opacity-0 transition-opacity duration-700 data-[ready=true]:opacity-100"
             autoPlay
             muted
             loop
             playsInline
-            poster={hero.poster}
+            onPlaying={(event) => event.currentTarget.setAttribute("data-ready", "true")}
             onError={() => setVideoFailed(true)}
           >
             <source src={hero.video} type="video/mp4" />
@@ -421,7 +419,7 @@ function Trabalhos() {
                   },
                 }}
               >
-                <article className="group relative aspect-[16/11] overflow-hidden rounded-2xl bg-neutral-900">
+                <article className="group relative aspect-[16/11] overflow-hidden rounded-2xl bg-black">
                   {item.video ? (
                     <video
                       src={item.video}
@@ -429,7 +427,8 @@ function Trabalhos() {
                       loop
                       playsInline
                       autoPlay
-                      className="absolute inset-0 h-full w-full object-cover"
+                      onPlaying={(event) => event.currentTarget.setAttribute("data-ready", "true")}
+                      className="absolute inset-0 h-full w-full bg-black object-cover opacity-0 transition-opacity duration-700 data-[ready=true]:opacity-100"
                     />
                   ) : (
                     <Image

@@ -28,6 +28,7 @@ export function youtubeEmbed(id: string, options?: { mute?: boolean; loop?: bool
     disablekb: "1",
     playsinline: "1",
     cc_load_policy: "0",
+    enablejsapi: "1",
   });
   if (options?.mute) params.set("mute", "1");
   if (options?.loop) {

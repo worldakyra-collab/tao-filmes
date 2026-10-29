@@ -17,15 +17,15 @@ export function Hero() {
   const textY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
 
   return (
-    <section ref={ref} className="relative h-screen w-full overflow-hidden">
+    <section ref={ref} className="relative h-screen w-full overflow-hidden bg-black">
       <motion.div className="absolute inset-0" style={{ scale }}>
         <video
           autoPlay
           muted
           loop
           playsInline
-          className="absolute inset-0 h-full w-full object-cover"
-          poster="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1920&q=80"
+          className="absolute inset-0 h-full w-full bg-black object-cover opacity-0 transition-opacity duration-700 data-[ready=true]:opacity-100"
+          onPlaying={(event) => event.currentTarget.setAttribute("data-ready", "true")}
         >
           <source src={HERO_VIDEO} type="video/mp4" />
         </video>

@@ -54,7 +54,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      data-scroll-behavior="smooth"
+      data-scroll-behavior="auto"
       className={`${dmSans.variable} ${anton.variable} ${archivoBlack.variable} ${instrumentSerif.variable} ${neucha.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-background text-foreground">

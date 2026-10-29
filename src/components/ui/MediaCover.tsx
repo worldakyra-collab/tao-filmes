@@ -8,21 +8,19 @@ import { CoverEmbedStyle } from "@/components/ui/cover-embed-style";
 export function MediaCover({
   src,
   title,
-  poster,
   quiet = false,
   href,
   className = "absolute inset-0 h-full w-full",
 }: {
   src: string;
   title?: string;
-  poster?: string;
   quiet?: boolean;
   href?: string;
   className?: string;
 }) {
   const youtube = youtubeId(src);
   if (youtube) {
-    return <YoutubeCover id={youtube} title={title} poster={poster} className={className} />;
+    return <YoutubeCover id={youtube} title={title} className={className} />;
   }
 
   const media = resolveMedia(src);
@@ -34,6 +32,22 @@ export function MediaCover({
   return <FileCover src={media.src} title={title} quiet={quiet} href={href} className={className} />;
 }
 
+function markPlaying(event: MessageEvent, frame: HTMLIFrameElement | null) {
+  if (!frame || event.source !== frame.contentWindow) return false;
+  let data = event.data;
+  if (typeof data === "string") {
+    try {
+      data = JSON.parse(data);
+    } catch {
+      return false;
+    }
+  }
+  if (!data || typeof data !== "object") return false;
+  if (data.event === "play" || data.event === "playing") return true;
+  if (data.event === "onStateChange" && data.info === 1) return true;
+  return data.info?.playerState === 1;
+}
+
 function YoutubeCover({
   id,
   title,
@@ -41,16 +55,30 @@ function YoutubeCover({
 }: {
   id: string;
   title?: string;
-  poster?: string;
   className: string;
 }) {
+  const frameRef = useRef<HTMLIFrameElement>(null);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const onMessage = (event: MessageEvent) => {
+      if (markPlaying(event, frameRef.current)) setReady(true);
+    };
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, []);
+
   return (
-    <div className={`${className} overflow-hidden`}>
+    <div className={`${className} overflow-hidden bg-black`}>
       <iframe
+        ref={frameRef}
         src={youtubeEmbed(id, { mute: true, loop: true })}
         title={title || "Vídeo"}
-        className="pointer-events-none absolute top-1/2 left-1/2 h-[130%] w-[130%] -translate-x-1/2 -translate-y-1/2 border-0"
+        className={`pointer-events-none absolute top-1/2 left-1/2 h-[130%] w-[130%] -translate-x-1/2 -translate-y-1/2 border-0 transition-opacity duration-700 ${ready ? "opacity-100" : "opacity-0"}`}
         allow="autoplay; encrypted-media"
+        onLoad={() => {
+          frameRef.current?.contentWindow?.postMessage(JSON.stringify({ event: "listening" }), "*");
+        }}
       />
     </div>
   );
@@ -68,27 +96,31 @@ function EmbedCover({
   youtube?: boolean;
 }) {
   const frameRef = useRef<HTMLIFrameElement>(null);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    if (!youtube) return;
-    const frame = frameRef.current;
-    const listen = () => {
-      frame?.contentWindow?.postMessage(JSON.stringify({ event: "listening" }), "*");
+    const onMessage = (event: MessageEvent) => {
+      if (markPlaying(event, frameRef.current)) setReady(true);
     };
-    frame?.addEventListener("load", listen);
-    return () => frame?.removeEventListener("load", listen);
-  }, [youtube]);
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, []);
 
   return (
-    <div className={`cover-embed ${className}`}>
+    <div className={`cover-embed bg-black ${className}`}>
       <CoverEmbedStyle />
       <iframe
         ref={frameRef}
         src={src}
         title={title || "Vídeo"}
-        className="pointer-events-none border-0"
+        className={`pointer-events-none border-0 transition-opacity duration-700 ${ready ? "opacity-100" : "opacity-0"}`}
         allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
         referrerPolicy="strict-origin-when-cross-origin"
+        onLoad={() => {
+          const win = frameRef.current?.contentWindow;
+          if (youtube) win?.postMessage(JSON.stringify({ event: "listening" }), "*");
+          win?.postMessage({ method: "addEventListener", value: "play" }, "*");
+        }}
       />
       <div className="absolute inset-0 z-10" />
     </div>
@@ -112,6 +144,7 @@ function FileCover({
   const pausedByUser = useRef(false);
   const [muted, setMuted] = useState(true);
   const [paused, setPaused] = useState(false);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const video = ref.current;
@@ -129,23 +162,27 @@ function FileCover({
       }
     };
 
+    const markReady = () => setReady(true);
+    video.addEventListener("playing", markReady);
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry) return;
-        if (entry.isIntersecting) {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.35) {
           if (video.preload === "none") video.preload = "metadata";
           if (!pausedByUser.current) void video.play().catch(() => {});
         } else {
           video.pause();
         }
       },
-      { rootMargin: "200px 0px" },
+      { rootMargin: "0px", threshold: 0.35 },
     );
 
     observer.observe(video);
     window.addEventListener("tao-video-sound", onOtherSound);
     return () => {
       observer.disconnect();
+      video.removeEventListener("playing", markReady);
       window.removeEventListener("tao-video-sound", onOtherSound);
     };
   }, [src]);
@@ -186,7 +223,7 @@ function FileCover({
   }
 
   return (
-    <div className={className}>
+    <div className={`${className} bg-black`}>
       <video
         ref={ref}
         muted
@@ -197,7 +234,7 @@ function FileCover({
         disablePictureInPicture
         disableRemotePlayback
         controls={false}
-        className="pointer-events-none h-full w-full scale-[1.18] object-cover"
+        className={`pointer-events-none h-full w-full scale-[1.18] object-cover transition-opacity duration-700 ${ready ? "opacity-100" : "opacity-0"}`}
       />
       {href ? <Link href={href} aria-label={title || "Ver trabalho"} className="absolute inset-0 z-10" /> : null}
       {quiet ? null : (

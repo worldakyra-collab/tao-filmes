@@ -1,3 +1,5 @@
+"use client";
+
 import { SITE_VIDEO_1 } from "@/lib/data";
 
 const VIDEO = SITE_VIDEO_1;
@@ -10,7 +12,8 @@ export function MaskedVisual() {
         muted
         loop
         playsInline
-        className="absolute inset-0 h-full w-full object-cover"
+        className="absolute inset-0 h-full w-full bg-black object-cover opacity-0 transition-opacity duration-700 data-[ready=true]:opacity-100"
+        onPlaying={(event) => event.currentTarget.setAttribute("data-ready", "true")}
       >
         <source src={VIDEO} type="video/mp4" />
       </video>

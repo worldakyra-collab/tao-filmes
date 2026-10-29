@@ -1,10 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Anton } from "next/font/google";
 import { HOME_WORKS, type HomeWork } from "@/lib/home-works";
-import { loadPoster } from "@/lib/work-poster";
 import { MediaCover } from "@/components/ui/MediaCover";
 
 const display = Anton({ weight: "400", subsets: ["latin"] });
@@ -69,20 +67,6 @@ function titleClass(title: string) {
   return "text-[clamp(44px,3.8vw,76px)]";
 }
 
-function usePoster(src: string) {
-  const [poster, setPoster] = useState("");
-  useEffect(() => {
-    let cancelled = false;
-    void loadPoster(src).then((url) => {
-      if (!cancelled && url) setPoster(url);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [src]);
-  return poster;
-}
-
 function CardMedia({
   work,
   video = false,
@@ -92,15 +76,13 @@ function CardMedia({
   video?: boolean;
   className?: string;
 }) {
-  const poster = usePoster(work.video);
-
   return (
     <div className={`relative overflow-hidden bg-neutral-950 ${className}`}>
       {video ? (
         <MediaCover src={work.video} />
-      ) : poster ? (
-        <img src={poster} alt="" draggable={false} className="absolute inset-0 h-full w-full object-cover" />
-      ) : null}
+      ) : (
+        <MediaCover src={work.video} quiet />
+      )}
     </div>
   );
 }

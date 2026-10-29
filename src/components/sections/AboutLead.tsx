@@ -1,3 +1,5 @@
+"use client";
+
 import { ABOUT_VIDEO } from "@/lib/data";
 
 export function AboutLead() {
@@ -9,7 +11,8 @@ export function AboutLead() {
           muted
           loop
           playsInline
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full bg-black object-cover opacity-0 transition-opacity duration-700 data-[ready=true]:opacity-100"
+          onPlaying={(event) => event.currentTarget.setAttribute("data-ready", "true")}
         >
           <source src={ABOUT_VIDEO} type="video/mp4" />
         </video>

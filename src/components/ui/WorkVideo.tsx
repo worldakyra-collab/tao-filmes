@@ -23,12 +23,31 @@ export function WorkVideo({ src }: { src: string }) {
   const youtube = youtubeId(src);
   if (youtube) {
     return (
-      <div className="relative mt-10 aspect-video overflow-hidden rounded-[2rem] bg-neutral-950 isolate [clip-path:inset(0_round_2rem)]">
+      <div className="relative isolate mt-10 aspect-video overflow-hidden rounded-[2rem] bg-black [clip-path:inset(0_round_2rem)]">
         <iframe
           src={youtubeEmbed(youtube, { mute: true, loop: true })}
           title="Vídeo"
-          className="pointer-events-none absolute top-1/2 left-1/2 h-[130%] w-[130%] -translate-x-1/2 -translate-y-1/2 border-0"
+          className="pointer-events-none absolute top-1/2 left-1/2 h-[130%] w-[130%] -translate-x-1/2 -translate-y-1/2 border-0 opacity-0 transition-opacity duration-700 data-[ready=true]:opacity-100"
           allow="autoplay; encrypted-media"
+          onLoad={(event) => {
+            const frame = event.currentTarget;
+            frame.contentWindow?.postMessage(JSON.stringify({ event: "listening" }), "*");
+            const onMessage = (message: MessageEvent) => {
+              if (message.source !== frame.contentWindow) return;
+              let data = message.data;
+              if (typeof data === "string") {
+                try {
+                  data = JSON.parse(data);
+                } catch {
+                  return;
+                }
+              }
+              if (data?.event === "onStateChange" && data.info === 1) {
+                frame.setAttribute("data-ready", "true");
+              }
+            };
+            window.addEventListener("message", onMessage);
+          }}
         />
         <div className="video-overlay pointer-events-none absolute inset-0" />
       </div>
@@ -38,12 +57,22 @@ export function WorkVideo({ src }: { src: string }) {
   const media = resolveMedia(src);
   if (media.kind === "embed") {
     return (
-      <div className="relative mt-10 aspect-video overflow-hidden rounded-[2rem] bg-neutral-950 isolate [clip-path:inset(0_round_2rem)]">
+      <div className="relative isolate mt-10 aspect-video overflow-hidden rounded-[2rem] bg-black [clip-path:inset(0_round_2rem)]">
         <iframe
           src={media.src}
           title="Vídeo"
-          className="pointer-events-none absolute inset-0 h-full w-full border-0"
+          className="pointer-events-none absolute inset-0 h-full w-full border-0 opacity-0 transition-opacity duration-700 data-[ready=true]:opacity-100"
           allow="autoplay; encrypted-media"
+          onLoad={(event) => {
+            const frame = event.currentTarget;
+            frame.contentWindow?.postMessage({ method: "addEventListener", value: "play" }, "*");
+            const onMessage = (message: MessageEvent) => {
+              if (message.source !== frame.contentWindow) return;
+              const data = message.data;
+              if (data?.event === "play") frame.setAttribute("data-ready", "true");
+            };
+            window.addEventListener("message", onMessage);
+          }}
         />
         <div className="video-overlay pointer-events-none absolute inset-0" />
       </div>
@@ -129,7 +158,7 @@ function FileWorkVideo({ src }: { src: string }) {
   }
 
   return (
-    <div className="relative mt-10 overflow-hidden rounded-[2rem] bg-neutral-950 isolate [clip-path:inset(0_round_2rem)]">
+    <div className="relative isolate mt-10 overflow-hidden rounded-[2rem] bg-black [clip-path:inset(0_round_2rem)]">
       <video
         ref={videoRef}
         src={src}
@@ -141,7 +170,8 @@ function FileWorkVideo({ src }: { src: string }) {
         disableRemotePlayback
         controls={false}
         controlsList="nodownload nofullscreen noremoteplayback noplaybackrate"
-        className="pointer-events-none aspect-video w-full object-cover"
+        onPlaying={(event) => event.currentTarget.setAttribute("data-ready", "true")}
+        className="pointer-events-none aspect-video w-full bg-black object-cover opacity-0 transition-opacity duration-700 data-[ready=true]:opacity-100"
       />
 
       <div className="video-overlay pointer-events-none absolute inset-0 z-10" />

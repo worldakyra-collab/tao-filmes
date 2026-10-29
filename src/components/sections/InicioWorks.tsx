@@ -1,10 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { HOME_WORKS, type HomeWork } from "@/lib/home-works";
-import { posterFor, resolveMedia, youtubeId } from "@/lib/portfolio-videos";
-import { loadPoster } from "@/lib/work-poster";
 import { MediaCover } from "@/components/ui/MediaCover";
 import { Reveal } from "@/components/ui/Reveal";
 
@@ -16,42 +13,9 @@ function titleSize(title: string) {
 }
 
 function WorkFrame({ work }: { work: HomeWork }) {
-  const youtube = youtubeId(work.video);
-  const [poster, setPoster] = useState(youtube ? `https://i.ytimg.com/vi/${youtube}/maxresdefault.jpg` : "");
-
-  useEffect(() => {
-    if (youtube) return;
-    const media = resolveMedia(work.video);
-    const src = media.kind === "file" ? media.src : work.video;
-    let cancelled = false;
-    void loadPoster(src).then((url) => {
-      if (!cancelled && url) setPoster(url);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [work.video, youtube]);
-
   return (
     <div className="relative aspect-[5/3] w-full shrink-0 overflow-hidden bg-black md:w-[38%]">
-      {poster ? (
-        <img
-          src={poster}
-          alt=""
-          className="absolute inset-0 h-full w-full origin-center scale-[1.35] object-cover"
-          onLoad={(event) => {
-            if (event.currentTarget.naturalWidth >= 400) return;
-            const fallback = posterFor(work.video);
-            setPoster((current) => (fallback && current !== fallback ? fallback : ""));
-          }}
-          onError={() => {
-            const fallback = posterFor(work.video);
-            setPoster((current) => (fallback && current !== fallback ? fallback : ""));
-          }}
-        />
-      ) : (
-        <MediaCover src={work.video} title={work.title} />
-      )}
+      <MediaCover src={work.video} title={work.title} />
     </div>
   );
 }

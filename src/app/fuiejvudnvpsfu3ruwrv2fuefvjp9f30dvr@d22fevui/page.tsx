@@ -352,7 +352,8 @@ export default function PainelPage() {
                 <video
                   ref={previewRef}
                   src={preview}
-                  className="aspect-video w-full"
+                  onPlaying={(event) => event.currentTarget.setAttribute("data-ready", "true")}
+                  className="aspect-video w-full bg-black opacity-0 transition-opacity duration-700 data-[ready=true]:opacity-100"
                   onPlay={() => setPlaying(true)}
                   onPause={() => setPlaying(false)}
                   onClick={() => {

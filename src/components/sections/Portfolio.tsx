@@ -16,13 +16,13 @@ function ProjectImage({ project }: { project: Project }) {
     <div className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-black md:aspect-[16/11]">
       <motion.div
         className="absolute inset-0"
-        initial={{ opacity: 0, scale: 1.05 }}
-        whileInView={{ opacity: 1, scale: 1 }}
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 1.1, ease: EASE }}
       >
         {project.video ? (
-          <MediaCover src={project.video} title={project.title} poster={project.image} href={`/portfolio/${project.slug}`} />
+          <MediaCover src={project.video} title={project.title} href={`/portfolio/${project.slug}`} />
         ) : null}
         <div className="pointer-events-none absolute inset-0 bg-black/0 transition-colors duration-700 group-hover:bg-black/25" />
       </motion.div>
@@ -117,10 +117,10 @@ function ProjectRow({
     >
       <motion.div
         className={imageLeft ? "order-1" : "order-1 lg:order-2"}
-        initial={{ opacity: 0, x: 72 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 0.9, ease: EASE }}
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, margin: "-40px" }}
+        transition={{ duration: 0.45, ease: EASE }}
       >
         <ProjectImage project={project} />
       </motion.div>
