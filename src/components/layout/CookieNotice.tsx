@@ -2,14 +2,18 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const KEY = "tao-cookies";
 
 export function CookieNotice() {
+  const pathname = usePathname();
+  const painel = pathname.startsWith("/fuiejvudnvpsfu3ruwrv2fuefvjp9f30dvr");
   const [open, setOpen] = useState(false);
   const [manage, setManage] = useState(false);
 
   useEffect(() => {
+    if (painel) return;
     localStorage.removeItem(KEY);
     if (!sessionStorage.getItem(KEY)) setOpen(true);
     const reopen = () => {
@@ -18,14 +22,14 @@ export function CookieNotice() {
     };
     window.addEventListener("tao-cookies", reopen);
     return () => window.removeEventListener("tao-cookies", reopen);
-  }, []);
+  }, [painel]);
 
   function save(value: "essencial" | "recusar") {
     sessionStorage.setItem(KEY, value);
     setOpen(false);
   }
 
-  if (!open) return null;
+  if (painel || !open) return null;
 
   return (
     <div className="fixed inset-x-3 bottom-3 z-[80] mx-auto max-w-xl rounded-3xl bg-[#F5F5F0] p-5 text-[#0A0A0A] shadow-2xl md:inset-x-auto md:right-6 md:bottom-6">

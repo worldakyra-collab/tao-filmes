@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 7,
   "inicioIds": [
     "inicio-roadside",
     "inicio-olhar",
@@ -18,18 +18,18 @@
   "works": [
     {
       "id": "inicio-roadside",
-      "title": "Roadside",
-      "year": "2025",
-      "client": "",
-      "category": "Longa",
+      "title": "a mudar",
+      "year": "a mudar",
+      "client": "a mudar",
+      "category": "a mudar",
       "video": "/video/1.mp4"
     },
     {
       "id": "inicio-olhar",
-      "title": "Olhar",
-      "year": "2024",
-      "client": "",
-      "category": "Retrato",
+      "title": "a mudar",
+      "year": "a mudar",
+      "client": "a mudar",
+      "category": "a mudar",
       "video": "/video/2.mp4"
     },
     {
@@ -42,17 +42,17 @@
     },
     {
       "id": "inicio-alem-do-horizonte",
-      "title": "Além do Horizonte",
-      "year": "2024",
-      "client": "",
-      "category": "Institucional",
+      "title": "a mudar",
+      "year": "a mudar",
+      "client": "a mudar",
+      "category": "a mudar",
       "video": "/video/3.mp4"
     },
     {
       "id": "inicio-nos-bastidores",
-      "title": "Nos Bastidores",
+      "title": "exemplo",
       "year": "2023",
-      "client": "",
+      "client": "grupo x",
       "category": "Documentário",
       "video": "/video/4.mp4"
     },
@@ -98,11 +98,18 @@
     },
     {
       "id": "novo-1792526266316",
-      "title": "h",
-      "year": "j",
-      "client": "k",
-      "category": "u",
+      "title": "a mudar",
+      "year": "a mudar",
+      "client": "a mudar",
+      "category": "a mudar",
       "video": "/video/5.mp4"
     }
+  ],
+  "trabalhosIds": [
+    "inicio-roadside",
+    "inicio-olhar",
+    "inicio-alem-do-horizonte",
+    "inicio-nos-bastidores",
+    "novo-1792526266316"
   ]
 }

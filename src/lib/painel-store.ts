@@ -15,6 +15,7 @@ export type PainelEstado = {
   version: number;
   inicioIds: string[];
   obrasIds: string[];
+  trabalhosIds: string[];
   works: PainelWork[];
 };
 
@@ -39,18 +40,38 @@ function seed(): PainelEstado {
     video: work.video,
   }));
 
+  const inicioIds = inicio.map((work) => work.id);
+
   return {
     version: 0,
-    inicioIds: inicio.map((work) => work.id),
+    inicioIds,
     obrasIds: OBRAS_SEED.map((work) => work.id),
+    trabalhosIds: inicioIds,
     works: [...inicio, ...OBRAS_SEED],
   };
+}
+
+function defaultTrabalhosIds(estado: PainelEstado) {
+  const known = [
+    "inicio-roadside",
+    "inicio-olhar",
+    "inicio-alem-do-horizonte",
+    "inicio-nos-bastidores",
+    "novo-1792526266316",
+  ].filter((id) => estado.works.some((work) => work.id === id));
+  if (known.length) return known;
+  return estado.inicioIds.filter((id) => estado.works.some((work) => work.id === id));
 }
 
 export async function readEstado(): Promise<PainelEstado> {
   try {
     const raw = await readFile(filePath, "utf8");
-    return JSON.parse(raw) as PainelEstado;
+    const estado = JSON.parse(raw) as PainelEstado;
+    if (!Array.isArray(estado.trabalhosIds)) {
+      estado.trabalhosIds = defaultTrabalhosIds(estado);
+      await writeEstado(estado);
+    }
+    return estado;
   } catch {
     const estado = seed();
     await writeEstado(estado);

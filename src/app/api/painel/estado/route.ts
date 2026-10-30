@@ -21,6 +21,7 @@ export async function GET(request: Request) {
     limite: INICIO_LIMITE,
     inicio: publicado || interno ? worksByIds(estado, estado.inicioIds) : [],
     obras: publicado || interno ? worksByIds(estado, estado.obrasIds) : [],
+    trabalhos: publicado || interno ? worksByIds(estado, estado.trabalhosIds) : [],
   });
 }
 
@@ -37,6 +38,7 @@ export async function POST(request: Request) {
     substituirId?: string;
     substituirIds?: string[];
     obrasIds?: string[];
+    trabalhosIds?: string[];
   };
 
   if (body.action === "pulso" && body.id && body.id.length <= 80) {
@@ -59,6 +61,27 @@ export async function POST(request: Request) {
     work.year = (body.year || "").trim();
     work.client = (body.client || "").trim();
     work.category = (body.category || "").trim();
+    estado.version += 1;
+    await writeEstado(estado);
+    return Response.json({ ok: true, version: estado.version });
+  }
+
+  if (body.action === "apagar" && body.id) {
+    const estado = await readEstado();
+    const exists = estado.works.some((item) => item.id === body.id);
+    if (!exists) return Response.json({ error: "Página não encontrada." }, { status: 404 });
+    estado.works = estado.works.filter((item) => item.id !== body.id);
+    estado.inicioIds = estado.inicioIds.filter((id) => id !== body.id);
+    estado.obrasIds = estado.obrasIds.filter((id) => id !== body.id);
+    estado.trabalhosIds = estado.trabalhosIds.filter((id) => id !== body.id);
+    estado.version += 1;
+    await writeEstado(estado);
+    return Response.json({ ok: true, version: estado.version });
+  }
+
+  if (body.action === "ordenar-trabalhos" && body.trabalhosIds) {
+    const estado = await readEstado();
+    estado.trabalhosIds = body.trabalhosIds.filter((id) => estado.works.some((item) => item.id === id));
     estado.version += 1;
     await writeEstado(estado);
     return Response.json({ ok: true, version: estado.version });

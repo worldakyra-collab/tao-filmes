@@ -19,6 +19,7 @@ type Estado = {
   visitantes: number;
   inicio: Work[];
   obras: Work[];
+  trabalhos: Work[];
 };
 
 type Step = "form" | "inicio" | "ordem" | "confirma" | "detalhe" | "pronto";
@@ -43,7 +44,7 @@ export default function PainelPage() {
   const [sending, setSending] = useState(false);
   const [authed, setAuthed] = useState<boolean | null>(null);
   const [senha, setSenha] = useState("");
-  const [modo, setModo] = useState<"novo" | "editar">("novo");
+  const [modo, setModo] = useState<"trabalhos" | "novo" | "editar">("trabalhos");
   const [editando, setEditando] = useState<Work | null>(null);
 
   async function load() {
@@ -129,6 +130,24 @@ export default function PainelPage() {
     }
     await load();
     setStep("pronto");
+  }
+
+  async function apagarTrabalho(work: Work) {
+    if (!window.confirm(`Apagar ${work.title}?`)) return;
+    setSending(true);
+    setStatus("");
+    const response = await fetch("/api/painel/estado", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "apagar", id: work.id }),
+    });
+    setSending(false);
+    if (!response.ok) {
+      setStatus("Não foi possível apagar.");
+      return;
+    }
+    setStatus("Trabalho apagado.");
+    await load();
   }
 
   async function atualizar() {
@@ -249,9 +268,12 @@ export default function PainelPage() {
           <div>
             <p className="text-[11px] tracking-[0.32em] text-white/40 uppercase">Tao Filmes</p>
             <h1 className="mt-3 font-[family-name:var(--font-instrument-serif)] text-5xl tracking-tight md:text-6xl">
-              {modo === "editar" ? "Editar página" : "Novo trabalho"}
+              {modo === "trabalhos" ? "Página dos trabalhos" : modo === "editar" ? "Editar página" : "Novo trabalho"}
             </h1>
             <div className="mt-5 flex flex-wrap gap-2">
+              <button type="button" onClick={() => { setModo("trabalhos"); setEditando(null); setStatus(""); }} className={`rounded-full px-4 py-2 text-[11px] tracking-[0.18em] uppercase ${modo === "trabalhos" ? "bg-white text-black" : "text-white/50 ring-1 ring-white/20"}`}>
+                Página dos trabalhos
+              </button>
               <button type="button" onClick={() => { setModo("novo"); setEditando(null); }} className={`rounded-full px-4 py-2 text-[11px] tracking-[0.18em] uppercase ${modo === "novo" ? "bg-white text-black" : "text-white/50 ring-1 ring-white/20"}`}>
                 Novo trabalho
               </button>
@@ -266,6 +288,50 @@ export default function PainelPage() {
             </p>
           ) : null}
         </div>
+        {modo === "trabalhos" ? (
+          <section className={editando ? "mt-10 max-w-xl" : "mt-10"}>
+            {editando ? (
+              <form onSubmit={(event) => void salvarEdicao(event)} className="flex flex-col gap-6">
+                <button type="button" onClick={() => setEditando(null)} className="w-fit text-[11px] tracking-[0.18em] text-white/50 uppercase">
+                  Voltar aos trabalhos
+                </button>
+                <Field label="Nome" value={title} onChange={setTitle} />
+                <Field label="Data" value={year} onChange={setYear} optional />
+                <Field label="Nome de contratante" value={client} onChange={setClient} optional />
+                <Field label="Tipo de serviço" value={category} onChange={setCategory} optional />
+                <button type="submit" disabled={sending} className="w-fit rounded-full bg-white px-7 py-3 text-[11px] tracking-[0.22em] text-black uppercase disabled:opacity-50">
+                  {sending ? "Guardando..." : "Guardar"}
+                </button>
+              </form>
+            ) : (
+              <div className="grid grid-cols-3 gap-4">
+                {(estado?.trabalhos ?? []).map((work) => (
+                  <article key={work.id} className="overflow-hidden rounded-2xl bg-white/[0.04] ring-1 ring-white/10">
+                    <div className="relative aspect-video bg-black">
+                      <WorkPreview video={work.video} />
+                    </div>
+                    <div className="flex flex-col gap-3 px-3 py-4">
+                      <CardFact label="Nome" value={work.title} />
+                      <CardFact label="Data" value={work.year} />
+                      <CardFact label="Nome de contratante" value={work.client} />
+                      <CardFact label="Tipo de serviço" value={work.category} />
+                      <div className="grid grid-cols-2 gap-2 pt-1">
+                        <button type="button" onClick={() => abrirEdicao(work)} className="rounded-full bg-white px-2 py-2 text-[10px] tracking-[0.14em] text-black uppercase">
+                          Editar
+                        </button>
+                        <button type="button" disabled={sending} onClick={() => void apagarTrabalho(work)} className="rounded-full px-2 py-2 text-[10px] tracking-[0.14em] text-white uppercase ring-1 ring-white/25 disabled:opacity-50">
+                          Apagar
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
+            {status ? <p className="mt-6 text-sm text-white/70">{status}</p> : null}
+          </section>
+        ) : null}
+
         {modo === "editar" ? (
           <section className="mt-10 max-w-xl">
             {editando ? (
@@ -568,6 +634,15 @@ export default function PainelPage() {
 
 function WorkPreview({ video }: { video: string }) {
   return <MediaCover src={video} quiet className="absolute inset-0 h-full w-full" />;
+}
+
+function CardFact({ label, value }: { label: string; value: string }) {
+  return (
+    <p className="flex flex-col gap-1">
+      <span className="text-[9px] tracking-[0.16em] text-white/45 uppercase">{label}</span>
+      <span className="font-serif text-xl leading-tight">{value || "—"}</span>
+    </p>
+  );
 }
 
 function Field({
