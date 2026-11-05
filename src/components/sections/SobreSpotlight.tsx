@@ -146,7 +146,7 @@ export function SobreSpotlight() {
       <div className="mx-auto max-w-[1440px]">
         <div className="relative grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-12">
           <div
-            className="pointer-events-none absolute inset-x-[-8vw] top-[18rem] z-0 -translate-y-1/2 overflow-hidden lg:top-[58%]"
+            className="pointer-events-none absolute inset-x-[-8vw] top-[58%] z-0 hidden -translate-y-1/2 overflow-hidden lg:block"
             style={{
               maskImage: "linear-gradient(90deg, #000 0%, #000 32%, transparent 50%)",
               WebkitMaskImage: "linear-gradient(90deg, #000 0%, #000 32%, transparent 50%)",
@@ -181,7 +181,7 @@ export function SobreSpotlight() {
               />
             </div>
 
-            <div className="relative mt-8 mb-8 w-[min(100%,380px)]">
+            <div className="relative mt-8 mb-12 w-[min(100%,380px)] lg:mb-8">
               <div className="relative aspect-square overflow-hidden rounded-[1.75rem] shadow-[0_24px_60px_rgba(0,0,0,0.45)]">
                 <Image
                   src="/giovanni.png"
@@ -203,6 +203,12 @@ export function SobreSpotlight() {
                 </span>
               </button>
             </div>
+
+            <p
+              className={`${display.className} mt-4 text-[clamp(1.7rem,7.4vw,2.5rem)] leading-[0.9] tracking-[-0.02em] text-white uppercase lg:hidden`}
+            >
+              Conheça a TAO Filmes
+            </p>
           </div>
 
           <div className="relative z-10 space-y-4 text-sm leading-relaxed text-white/70 md:text-[15px] lg:col-span-7">

@@ -59,7 +59,7 @@ export function Footer() {
         </div>
 
         <p
-          className="font-serif mt-8 max-w-full overflow-hidden text-[clamp(1.55rem,11.2vw,10.5rem)] leading-[0.85] tracking-[-0.02em] whitespace-nowrap uppercase md:mt-10"
+          className="font-serif mt-8 max-w-full py-[0.08em] text-[clamp(1.55rem,11.2vw,10.5rem)] leading-[1.15] tracking-[-0.02em] whitespace-nowrap uppercase md:mt-10"
         >
           TAO Filmes
         </p>

@@ -48,11 +48,27 @@ function Hero() {
   const locked = useRef(false);
 
   useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 768px)");
     if (reduce) return;
 
     let frame = 0;
+    let listening = false;
+
+    const clearInline = () => {
+      locked.current = false;
+      const track = trackRef.current;
+      const panel = panelRef.current;
+      if (track) track.style.height = "";
+      if (panel) {
+        panel.style.position = "";
+        panel.style.height = "";
+      }
+      if (gradientRef.current) gradientRef.current.style.opacity = "";
+      if (heroTextRef.current) heroTextRef.current.style.opacity = "";
+    };
 
     const apply = () => {
+      if (!desktop.matches) return;
       if (locked.current) return;
 
       const distance = window.innerHeight;
@@ -84,18 +100,36 @@ function Hero() {
       frame = requestAnimationFrame(apply);
     };
 
-    window.addEventListener("scroll", onScroll, { passive: true });
-    apply();
+    const sync = () => {
+      if (!desktop.matches) {
+        if (listening) {
+          window.removeEventListener("scroll", onScroll);
+          listening = false;
+        }
+        cancelAnimationFrame(frame);
+        clearInline();
+        return;
+      }
+      if (!listening) {
+        window.addEventListener("scroll", onScroll, { passive: true });
+        listening = true;
+      }
+      apply();
+    };
+
+    sync();
+    desktop.addEventListener("change", sync);
 
     return () => {
       cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", onScroll);
+      if (listening) window.removeEventListener("scroll", onScroll);
+      desktop.removeEventListener("change", sync);
     };
   }, [reduce]);
 
   return (
-    <div ref={trackRef} id="inicio" className="relative h-[155vh]">
-      <section ref={panelRef} className="sticky top-0 h-screen w-full overflow-hidden bg-black">
+    <div ref={trackRef} id="inicio" className="relative md:h-[155vh]">
+      <section ref={panelRef} className="relative h-[100svh] w-full overflow-hidden bg-black md:sticky md:top-0 md:h-screen">
         {videoFailed ? null : (
           <video
             className="absolute inset-0 h-full w-full bg-black object-cover opacity-0 transition-opacity duration-700 data-[ready=true]:opacity-100"
