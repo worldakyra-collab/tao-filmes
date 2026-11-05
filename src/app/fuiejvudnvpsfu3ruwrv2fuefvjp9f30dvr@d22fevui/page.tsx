@@ -277,9 +277,6 @@ export default function PainelPage() {
               <button type="button" onClick={() => { setModo("novo"); setEditando(null); }} className={`rounded-full px-4 py-2 text-[11px] tracking-[0.18em] uppercase ${modo === "novo" ? "bg-white text-black" : "text-white/50 ring-1 ring-white/20"}`}>
                 Novo trabalho
               </button>
-              <button type="button" onClick={() => { setModo("editar"); setEditando(null); }} className={`rounded-full px-4 py-2 text-[11px] tracking-[0.18em] uppercase ${modo === "editar" ? "bg-white text-black" : "text-white/50 ring-1 ring-white/20"}`}>
-                Editar página
-              </button>
             </div>
           </div>
           {estado ? (
